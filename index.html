@@ -569,7 +569,7 @@ html:has(body.side-open) { overflow: hidden !important; }
       return { id: nid++, type: 'photo', label: 'Photos', photos: [], idx: 0, last: Date.now(), paused: false,
         auto: true, interval: 5, shuffle: false, loop: true, trans: 'fade',
         width: 260, height: 260, fit: 'cover', radius: 28, opacity: 100, pad: 0, bg: '#ffffff', border: false, borderColor: '#ffffff', shadow: true,
-        brightness: 100, gray: 0, tap: 'next', lp: 'menu', lpTime: 550,
+        brightness: 100, gray: 0, tap: 'zones', lp: 'menu', lpTime: 550,
         mEdit: true, mNext: true, mPrev: true, mShuffle: true, mPause: true, mView: true, mRemove: true };
     }
     function photoBox(el, w) {
@@ -860,7 +860,7 @@ html:has(body.side-open) { overflow: hidden !important; }
             if (w.border) o += col('borderColor', 'Border colour');
           } else {
             o += sh('Tap on widget');
-            o += opts('tap', 'When tapped', [['next', 'Next photo'], ['prev', 'Previous photo'], ['pause', 'Pause / resume'], ['view', 'Full screen'], ['none', 'Nothing']]);
+            o += opts('tap', 'When tapped', [['zones', 'Left / Center / Right'], ['next', 'Next photo'], ['prev', 'Previous photo'], ['pause', 'Pause / resume'], ['view', 'Full screen'], ['none', 'Nothing']]);
             o += sh('Long press');
             o += opts('lp', 'When long-pressed', [['menu', 'Show menu'], ['edit', 'Edit widget'], ['none', 'Nothing']]);
             o += rng('lpTime', 'Long-press time', 300, 1500, 50, 'ms');
@@ -1002,7 +1002,7 @@ html:has(body.side-open) { overflow: hidden !important; }
         if (!e.target.closest('.pm')) closePM();
       if (S.dd && !e.target.closest('.dd')) { S.dd = false; renderPanel(); }
       var wEl = e.target.closest('.w');
-    if (wEl && !e.target.closest('button')) { var pw0 = cur(); if (wEl.dataset.type === 'photo' && pw0 && pw0.type === 'photo') photoAct(pw0, pw0.tap); else select(Number(wEl.dataset.id)); return; }
+    if (wEl && !e.target.closest('button')) { var pw0 = cur(); if (wEl.dataset.type === 'photo' && pw0 && pw0.type === 'photo') { var tapA = pw0.tap; if (tapA === 'zones') { var zr = wEl.getBoundingClientRect(), zf = (e.clientX - zr.left) / zr.width; tapA = zf < 1 / 3 ? 'prev' : zf > 2 / 3 ? 'next' : 'edit'; } photoAct(pw0, tapA); } else select(Number(wEl.dataset.id)); return; }
     var b = e.target.closest('button'); if (!b) return;
     var w = cur();
     var attr = b.getAttributeNames().filter(function (n) { return n.indexOf('data-') === 0; })[0];
