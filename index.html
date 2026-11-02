@@ -32,7 +32,7 @@
   --bg: #f1ebdc; --surface: #faf6ec; --surface2: #eae3d0; --fg: #2b2619; --muted: #766c56;
   --line: #ddd4bd; --accent: #3b5c46; --accent-fg: #faf6ec; color-scheme: light;
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 body {
   background: var(--bg); color: var(--fg); font-family: var(--ui); font-size: 15px; line-height: 1.45;
   padding-block: 20px 40px;
@@ -337,7 +337,8 @@ html:has(body.side-open) { overflow: hidden !important; }
 .w { --mono: 'Geist Mono', ui-monospace, monospace; }
 .sd-new { flex-wrap: wrap; }
 .sd-new button { flex: 1 1 28%; }
-.wph { position: relative; overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer; touch-action: manipulation; }
+.wph { position: relative; overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer; touch-action: manipulation; border: none; outline: none; -webkit-tap-highlight-color: transparent; }
+.wph:focus, .wph:focus-visible { outline: none; }
 .pi { display: block; width: 100%; height: 100%; pointer-events: none; }
 .pi.a-fade { animation: pwf 0.7s ease; }
 .pi.a-slide { animation: pws 0.5s ease; }
@@ -578,9 +579,9 @@ html:has(body.side-open) { overflow: hidden !important; }
       s.borderRadius = w.radius + 'px'; s.opacity = w.opacity / 100;
       s.background = w.pad > 0 ? w.bg : 'rgba(0, 0, 0, 0.25)';
       s.boxShadow = w.shadow ? '0 10px 30px rgba(0, 0, 0, 0.35)' : 'none';
-      s.border = '1.5px solid ' + (w.border ? w.borderColor : 'transparent');
-    }
-    function fillPhoto(el, w, anim) {
+            s.border = 'none'; s.outline = 'none';
+          }
+          function fillPhoto(el, w, anim) {
       var n = w.photos.length, p = w.photos[w.idx], r = Math.max(0, w.radius - w.pad), h = '';
       if (!p) {
         h = '<div class="pe"><b>No photos yet</b><span>Add photos in the editor</span></div>';
@@ -855,9 +856,8 @@ html:has(body.side-open) { overflow: hidden !important; }
             o += sh('Adjust');
             o += rng('brightness', 'Brightness', 40, 160, 1, '%');
             o += rng('gray', 'Grayscale', 0, 100, 1, '%');
-            o += sh('Border and shadow');
-            o += '<div class="tg">' + chk('border', 'Border') + chk('shadow', 'Drop shadow') + '</div>';
-            if (w.border) o += col('borderColor', 'Border colour');
+            o += sh('Shadow');
+                        o += '<div class="tg">' + chk('shadow', 'Drop shadow') + '</div>';
           } else {
             o += sh('Tap on widget');
             o += opts('tap', 'When tapped', [['zones', 'Left / Center / Right'], ['next', 'Next photo'], ['prev', 'Previous photo'], ['pause', 'Pause / resume'], ['view', 'Full screen'], ['none', 'Nothing']]);
