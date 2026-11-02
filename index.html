@@ -190,7 +190,7 @@ input:disabled, select:disabled { opacity: 0.4; }
                 <button class="chip" data-wall="moss" aria-pressed="false">Moss</button>
         <button class="chip" data-wall="check" aria-pressed="false">Transparency grid</button>
       </div>
-      <p class="hint">Choose Text or Countdown in the editor to preview it here. Switch to the grid wallpaper to see transparent backgrounds.</p>
+      
     </section>
 
     <section class="panel" id="panel" aria-label="Widget editor"></section>
@@ -373,8 +373,8 @@ input:disabled, select:disabled { opacity: 0.4; }
             '<div class="dd-l" role="listbox" aria-labelledby="l-font"' + (S.dd ? '' : ' hidden') + '>' + list + '</div></div></div>';
         }
 
-    var h = '<span class="lb">Choose a widget</span>' + kindsHTML();
-        h += '<span class="lb">' + (cnt ? 'Countdown' : 'Text') + ' settings</span>';
+    var h = kindsHTML();
+        
     h += '<div class="tabs" role="tablist">' + [['content', 'Content'], ['style', 'Style'], ['bg', 'Background']].map(function (t) {
       return '<button class="tab" role="tab" data-tab="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' + t[1] + '</button>';
     }).join('') + '</div>';
