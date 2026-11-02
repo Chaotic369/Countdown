@@ -294,6 +294,13 @@ body { padding-block: 10px calc(110px + env(safe-area-inset-bottom, 0px)); }
 .chip, .ghost, .kind, .cs, .cp-c, .dd-t, .dt-t, .panel, .stage, .seg, .tag, .themes, .wp, .cp-dot, select, input[type="text"], input[type="datetime-local"], input[type="color"], textarea { border: 0 !important; }
 .cs[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
 .dt-t[aria-expanded="true"] { box-shadow: 0 0 0 1.5px var(--accent); }
+
+/* smooth, full-length scrolling */
+html { height: auto !important; min-height: 100%; overflow-y: auto !important; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; overscroll-behavior-y: auto; scroll-padding-top: 160px; }
+body { height: auto !important; min-height: 100vh; overflow-y: visible !important; overflow-x: clip; }
+.app, .layout, .panel { overflow: visible !important; height: auto !important; max-height: none !important; }
+.panel { padding-bottom: 28px; }
+.app::after { content: ""; display: block; height: 80px; flex: none; }
 </style>
 
 <div class="app">
