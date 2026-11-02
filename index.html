@@ -301,17 +301,56 @@ body { height: auto !important; min-height: 100vh; overflow-y: visible !importan
 .app, .layout, .panel { overflow: visible !important; height: auto !important; max-height: none !important; }
 .panel { padding-bottom: 28px; }
 .app::after { content: ""; display: block; height: 80px; flex: none; }
+
+/* sidebar */
+.kinds { display: none !important; }
+.mn { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 12px; background: transparent; color: var(--fg); padding: 0; margin-right: 2px; }
+.sd-ov { position: fixed; inset: 0; z-index: 55; border: 0; padding: 0; background: rgba(0, 0, 0, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+.sd-ov.open { opacity: 1; pointer-events: auto; }
+.sd { position: fixed; top: 0; bottom: 0; left: 0; z-index: 60; width: min(310px, 86vw); background: var(--surface); color: var(--fg); transform: translateX(-102%); transition: transform 0.25s ease; overflow-y: auto; overscroll-behavior: contain; padding: calc(14px + env(safe-area-inset-top, 0px)) 14px calc(24px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 0 40px rgba(0, 0, 0, 0.5); }
+.sd.open { transform: none; }
+html:has(body.side-open) { overflow: hidden !important; }
+.sd-h { display: flex; align-items: center; gap: 8px; }
+.sd-h b { margin-right: auto; font-size: 17px; }
+.sd-plus { display: inline-flex; align-items: center; gap: 6px; border: 0; border-radius: 999px; padding: 8px 13px; background: var(--accent); color: var(--accent-fg); font-size: 13px; font-weight: 600; }
+.sd-c { width: 34px; height: 34px; border: 0; border-radius: 10px; background: var(--surface2); color: var(--fg); font-size: 20px; line-height: 1; padding: 0; }
+.sd-new { display: flex; gap: 8px; margin-top: 12px; }
+.sd-new[hidden] { display: none; }
+.sd-new button { flex: 1; border: 0; border-radius: 12px; padding: 11px 8px; background: var(--surface2); color: var(--fg); font-size: 14px; font-weight: 500; }
+.sd-g { display: flex; justify-content: space-between; align-items: center; margin: 18px 4px 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.sd-e { margin: 0 4px 6px; font-size: 13px; color: var(--muted); }
+.si { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+.si-b { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; text-align: left; border: 0; border-radius: 14px; padding: 8px 10px; background: var(--surface2); color: var(--fg); }
+.si-t { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 500; }
+.si.on .si-b { background: var(--accent); color: var(--accent-fg); }
+.si.on .ki { background: color-mix(in srgb, var(--accent-fg) 16%, transparent); }
+.si-x { width: 34px; height: 34px; flex: none; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; padding: 0; }
+@media (prefers-reduced-motion: reduce) { .sd, .sd-ov { transition: none; } }
 </style>
 
 <div class="app">
   <header class="top">
-    <div class="brand"><span class="mark"></span>Countdown</div>
+    <div class="brand"><button class="mn" type="button" data-side="open" aria-label="Open widgets"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button><span class="mark"></span>Countdown</div>
     <div class="themes" role="radiogroup" aria-label="App theme">
       <button class="th" role="radio" data-ui="cream" aria-checked="false"><i style="--a:#f1ebdc;--b:#3b5c46"></i>Cream</button>
             <button class="th" role="radio" data-ui="dark" aria-checked="false"><i style="--a:#0e1012;--b:#f2f3f5"></i>Dark</button>
     </div>
   <button class="tt" type="button" aria-label="Toggle theme" onclick="var a=document.querySelectorAll('.th');if(a.length>1)a[a[0].getAttribute('aria-checked')==='true'?1:0].click()"><svg class="moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="currentColor"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
     </header>
+
+      <button type="button" class="sd-ov" id="side-ov" data-side="close" aria-label="Close sidebar"></button>
+      <aside class="sd" id="side" aria-label="Widgets">
+        <div class="sd-h">
+          <b>Widgets</b>
+          <button type="button" class="sd-plus" id="side-plus" data-newtoggle="1" aria-label="New widget" aria-expanded="false"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" fill="none"/></svg><span>New widget</span></button>
+          <button type="button" class="sd-c" data-side="close" aria-label="Close sidebar">×</button>
+        </div>
+        <div class="sd-new" id="side-new" hidden>
+          <button type="button" data-add="text">Aa &nbsp;Text</button>
+          <button type="button" data-add="count">88 &nbsp;Countdown</button>
+        </div>
+        <div class="sd-l" id="side-list"></div>
+      </aside>
 
   <main class="layout">
     <section class="stage-col" aria-label="Home screen preview">
@@ -421,7 +460,33 @@ body { height: auto !important; min-height: 100vh; overflow-y: visible !importan
     return '<svg class="col" viewBox="0 0 20 100" style="height:' + h + 'px;width:' + (h * 0.2) + 'px" aria-hidden="true"><circle cx="10" cy="33" r="6"/><circle cx="10" cy="67" r="6"/></svg>';
   }
 
-  /* ---------- widgets ---------- */
+  /* ---------- sidebar ---------- */
+    var sideNew = false;
+    function renderSide() {
+      var host = $('#side-list'); if (!host) return;
+      var info = { text: ['Text widgets', 'Aa'], count: ['Countdown widgets', '88'] };
+      var h = '';
+      ['text', 'count'].forEach(function (t) {
+        var items = S.w.filter(function (x) { return x.type === t; });
+        h += '<div class="sd-g"><span>' + info[t][0] + '</span><b>' + items.length + '</b></div>';
+        if (!items.length) h += '<p class="sd-e">None yet</p>';
+        items.forEach(function (x) {
+          h += '<div class="si' + (x.id === S.sel ? ' on' : '') + '"><button type="button" class="si-b" data-pick="' + x.id + '"><span class="ki">' + info[t][1] + '</span><span class="si-t">' + esc(nm(x)) + '</span></button><button type="button" class="si-x" data-del="' + x.id + '" aria-label="Delete widget">×</button></div>';
+        });
+      });
+      host.innerHTML = h;
+      var nb = $('#side-new'); if (nb) nb.hidden = !sideNew;
+      var pb = $('#side-plus'); if (pb) pb.setAttribute('aria-expanded', String(sideNew));
+    }
+    function toggleSide(o) {
+      var s = $('#side'), v = $('#side-ov'); if (!s || !v) return;
+      s.classList.toggle('open', o); v.classList.toggle('open', o);
+      document.body.classList.toggle('side-open', o);
+      if (!o) sideNew = false;
+      renderSide();
+    }
+
+    /* ---------- widgets ---------- */
   function box(el, w) {
     var s = el.style;
     s.padding = w.pad + 'px'; s.borderRadius = w.radius + 'px';
@@ -449,7 +514,7 @@ body { height: auto !important; min-height: 100vh; overflow-y: visible !importan
     el.innerHTML = h;
   }
   function renderWidgets() {
-    var host = $('#widgets'); host.textContent = '';
+    var host = $('#widgets'); host.textContent = ''; renderSide();
     S.w.filter(function (x) { return x.id === S.sel; }).forEach(function (w) {
           var el = document.createElement('div');
           el.className = 'w';
@@ -709,14 +774,24 @@ body { height: auto !important; min-height: 100vh; overflow-y: visible !importan
     var attr = b.getAttributeNames().filter(function (n) { return n.indexOf('data-') === 0; })[0];
     var q = attr ? '[' + attr + '="' + b.getAttribute(attr) + '"]' : null;
 
-    if (b.dataset.ui) { setUI(b.dataset.ui); return; }
+    if (b.dataset.side) { toggleSide(b.dataset.side === 'open'); return; }
+        if (b.dataset.newtoggle) { sideNew = !sideNew; renderSide(); return; }
+        if (b.dataset.pick) { S.sel = Number(b.dataset.pick); S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(); toggleSide(false); return; }
+        if (b.dataset.del) {
+          if (S.w.length < 2) return;
+          var did = Number(b.dataset.del);
+          S.w = S.w.filter(function (x) { return x.id !== did; });
+          if (S.sel === did) { S.sel = S.w[S.w.length - 1].id; S.dd = false; S.cp = null; S.dt = false; }
+          renderWidgets(); renderPanel(); return;
+        }
+        if (b.dataset.ui) { setUI(b.dataset.ui); return; }
     if (b.dataset.wall) { S.wall = b.dataset.wall; applyWall(); return; }
     if (b.dataset.sel) { S.sel = Number(b.dataset.sel); S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(q); return; }
         if (b.dataset.tab) { S.tab = b.dataset.tab; S.dd = false; S.cp = null; S.dt = false; renderPanel(q); return; }
     if (b.dataset.add) {
-      if (S.w.length >= 6) return;
+      if (S.w.length >= 30) return;
       var nw = b.dataset.add === 'text' ? mkText() : mkCount();
-      S.w.push(nw); S.sel = nw.id; S.tab = 'content'; renderWidgets(); renderPanel(); return;
+      S.w.push(nw); S.sel = nw.id; S.tab = 'content'; S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(); toggleSide(false); return;
     }
     if (b.hasAttribute('data-remove')) {
       if (S.w.length < 2) return;
@@ -746,6 +821,7 @@ body { height: auto !important; min-height: 100vh; overflow-y: visible !importan
     }
   });
   document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && document.body.classList.contains('side-open')) { toggleSide(false); return; }
       if (e.key === 'Escape' && (S.dd || S.cp || S.dt)) { S.dd = false; S.cp = null; S.dt = false; renderPanel(); return; }
       if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('w')) {
       e.preventDefault(); select(Number(e.target.dataset.id));
