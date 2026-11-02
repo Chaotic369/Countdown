@@ -121,6 +121,25 @@ textarea { resize: vertical; min-height: 76px; }
 input[type="range"] { width: 100%; accent-color: var(--accent); }
 input[type="color"] { width: 100%; height: 42px; padding: 3px; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; }
 input:disabled, select:disabled { opacity: 0.4; }
+.cp { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.cs { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); padding: 0; flex: none; transition: transform 0.12s; }
+.cs[aria-pressed="true"] { transform: scale(1.18); border: 2px solid var(--fg); }
+.cs:disabled { opacity: 0.4; cursor: default; }
+.cp-c { position: relative; display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; cursor: pointer; }
+.cp-c input[type="color"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; padding: 0; border: 0; cursor: pointer; }
+.cp-c:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+.cp-c:has(input:disabled) { opacity: 0.4; pointer-events: none; }
+.cp-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--line); }
+.stage { min-height: 460px; padding: 56px 18px 100px; }
+.sbar { position: absolute; top: 16px; left: 22px; right: 22px; display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 13px; font-weight: 500; color: rgba(255, 255, 255, 0.92); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35); }
+.sb-r { display: flex; align-items: center; gap: 6px; }
+.bat { width: 24px; height: 11px; border: 1.5px solid currentColor; border-radius: 4px; position: relative; }
+.bat::after { content: ""; position: absolute; inset: 1.5px 35% 1.5px 1.5px; background: currentColor; border-radius: 2px; }
+.dock { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); display: flex; gap: 14px; padding: 12px 16px; border-radius: 26px; background: rgba(255, 255, 255, 0.16); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+.dock i { width: 44px; height: 44px; border-radius: 12px; background: rgba(255, 255, 255, 0.28); }
+.stage[data-wall="paper"] .sbar, .stage[data-wall="check"] .sbar { color: #2b2619; text-shadow: none; }
+.stage[data-wall="paper"] .dock, .stage[data-wall="check"] .dock { background: rgba(0, 0, 0, 0.08); }
+.stage[data-wall="paper"] .dock i, .stage[data-wall="check"] .dock i { background: rgba(0, 0, 0, 0.14); }
 .dd { position: relative; }
 .dd-t { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; text-align: left; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 16px; }
 .dd-t svg { flex: none; color: var(--muted); transition: transform 0.15s; }
@@ -161,7 +180,11 @@ input:disabled, select:disabled { opacity: 0.4; }
 
   <main class="layout">
     <section class="stage-col" aria-label="Home screen preview">
-      <div class="stage" id="stage" data-wall="dusk"><div class="widgets" id="widgets"></div></div>
+      <div class="stage" id="stage" data-wall="dusk">
+              <div class="sbar" aria-hidden="true"><span id="clock">09:41</span><span class="sb-r"><i class="bat"></i></span></div>
+              <div class="widgets" id="widgets"></div>
+              <div class="dock" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            </div>
       <div class="stage-bar" id="walls">
         <span class="lb">Wallpaper</span>
         <button class="chip" data-wall="dusk" aria-pressed="true">Dusk</button>
@@ -329,8 +352,14 @@ input:disabled, select:disabled { opacity: 0.4; }
       return '<label class="sw"><input type="checkbox" id="c-' + k + '" data-k="' + k + '"' + (w[k] ? ' checked' : '') + (dis ? ' disabled' : '') + '><span class="knob"></span><span>' + l + '</span></label>';
     }
     function col(k, l, dis) {
-      return '<div class="f"><label for="c-' + k + '">' + l + '</label><input type="color" id="c-' + k + '" data-k="' + k + '" value="' + w[k] + '"' + (dis ? ' disabled' : '') + '></div>';
-    }
+          var presets = ['#ffffff', '#fff4dc', '#ffb000', '#ff6b4a', '#7ee787', '#5ec8ff', '#c9a7ff', '#111111'];
+          var d = dis ? ' disabled' : '';
+          return '<div class="f"><div class="fh"><label for="c-' + k + '">' + l + '</label><output id="o-' + k + '">' + w[k] + '</output></div>' +
+            '<div class="cp">' + presets.map(function (c) {
+              return '<button type="button" class="cs" data-color="' + k + ':' + c + '" aria-label="' + c + '" aria-pressed="' + (String(w[k]).toLowerCase() === c) + '" style="background:' + c + '"' + d + '></button>';
+            }).join('') +
+            '<label class="cp-c"><input type="color" id="c-' + k + '" data-k="' + k + '" value="' + w[k] + '"' + d + '><i class="cp-dot" style="background:' + w[k] + '"></i><span>Custom</span></label></div></div>';
+        }
     function fontSel() {
           var groups = cnt ? [['Alarm clock', ['seg7'].concat(DIGITAL)], ['Text', TEXTF]] : [['Text', TEXTF], ['Digital', DIGITAL]];
           var fam = function (f) { return f === 'seg7' ? 'var(--mono)' : FONTS[f]; };
@@ -412,7 +441,8 @@ input:disabled, select:disabled { opacity: 0.4; }
   });
   panel.addEventListener('change', function (e) {
     var t = e.target; if (!t.dataset || !t.dataset.k) return;
-    if (t.type === 'checkbox' || t.tagName === 'SELECT') {
+    if (t.type === 'color') { renderPanel('#' + t.id); return; }
+        if (t.type === 'checkbox' || t.tagName === 'SELECT') {
       setVal(t); renderWidgets(); renderPanel('#' + t.id);
     }
   });
@@ -454,7 +484,8 @@ input:disabled, select:disabled { opacity: 0.4; }
     if (!w) return;
         if (b.dataset.dd) { S.dd = !S.dd; renderPanel('#c-font'); return; }
         if (b.dataset.font) { w.font = b.dataset.font; S.dd = false; renderWidgets(); renderPanel('#c-font'); return; }
-        if (b.dataset.set) { var kv = b.dataset.set.split(':'); w[kv[0]] = kv[1]; renderWidgets(); renderPanel(q); return; }
+        if (b.dataset.color) { var cv = b.dataset.color.split(':'); w[cv[0]] = cv[1]; renderWidgets(); renderPanel(q); return; }
+            if (b.dataset.set) { var kv = b.dataset.set.split(':'); w[kv[0]] = kv[1]; renderWidgets(); renderPanel(q); return; }
     if (b.dataset.unit) {
       var k = b.dataset.unit, on = Object.keys(w.units).filter(function (x) { return w.units[x]; });
       if (w.units[k] && on.length < 2) return;
@@ -479,8 +510,14 @@ input:disabled, select:disabled { opacity: 0.4; }
   if (UI_THEMES.indexOf(u0) < 0) u0 = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'cream';
   setUI(u0); applyWall(); renderWidgets(); renderPanel();
 
-  setInterval(function () {
-    document.querySelectorAll('.w[data-type="count"]').forEach(function (el) {
+  function tickClock() {
+      var d = new Date(), c = $('#clock');
+      if (c) c.textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+    }
+    tickClock();
+    setInterval(function () {
+      tickClock();
+      document.querySelectorAll('.w[data-type="count"]').forEach(function (el) {
       var w = S.w.filter(function (x) { return x.id === Number(el.dataset.id); })[0];
       if (w) fill(el, w);
     });
