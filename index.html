@@ -70,9 +70,8 @@ button { cursor: pointer; }
   display: flex; align-items: center; justify-content: center; overflow: hidden; isolation: isolate;
   border: 1px solid var(--line);
 }
-.stage[data-wall="dusk"] { background: linear-gradient(165deg, #1f2a4d 0%, #6b4a86 52%, #f2a766 100%); }
+.stage[data-wall="phone"] { background: radial-gradient(90% 60% at 18% 12%, #3a5ba9 0%, transparent 62%), radial-gradient(80% 60% at 88% 90%, #8a3f94 0%, transparent 62%), #12162a; }
 .stage[data-wall="moss"] { background: radial-gradient(120% 90% at 15% 10%, #6f8f66 0%, #2c4332 55%, #16241b 100%); }
-.stage[data-wall="paper"] { background: #e8e0cc; }
 .stage[data-wall="check"] { background: repeating-conic-gradient(#cfcfcf 0% 25%, #f5f5f5 0% 50%) 50% / 22px 22px; }
 .widgets { display: flex; flex-direction: column; align-items: center; gap: 22px; max-width: 100%; }
 .w { max-width: 100%; color: #fff; }
@@ -180,16 +179,15 @@ input:disabled, select:disabled { opacity: 0.4; }
 
   <main class="layout">
     <section class="stage-col" aria-label="Home screen preview">
-      <div class="stage" id="stage" data-wall="dusk">
+      <div class="stage" id="stage" data-wall="phone">
               <div class="sbar" aria-hidden="true"><span id="clock">09:41</span><span class="sb-r"><i class="bat"></i></span></div>
               <div class="widgets" id="widgets"></div>
               <div class="dock" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
             </div>
       <div class="stage-bar" id="walls">
         <span class="lb">Wallpaper</span>
-        <button class="chip" data-wall="dusk" aria-pressed="true">Dusk</button>
-        <button class="chip" data-wall="moss" aria-pressed="false">Moss</button>
-        <button class="chip" data-wall="paper" aria-pressed="false">Paper</button>
+        <button class="chip" data-wall="phone" aria-pressed="true">Default</button>
+                <button class="chip" data-wall="moss" aria-pressed="false">Moss</button>
         <button class="chip" data-wall="check" aria-pressed="false">Transparency grid</button>
       </div>
       <p class="hint">Choose Text or Countdown in the editor to preview it here. Switch to the grid wallpaper to see transparent backgrounds.</p>
@@ -240,7 +238,7 @@ input:disabled, select:disabled { opacity: 0.4; }
       bgOn: true, bg: '#0b0b0b', bgOpacity: 55, blur: 10, radius: 22, pad: 20, border: false, borderColor: '#ffb000' };
   }
 
-  var S = { w: [mkText(), mkCount()], sel: null, wall: 'dusk', tab: 'content', dd: false };
+  var S = { w: [mkText(), mkCount()], sel: null, wall: 'phone', tab: 'content', dd: false };
   S.sel = S.w[1].id;
 
   function cur() { for (var i = 0; i < S.w.length; i++) if (S.w[i].id === S.sel) return S.w[i]; return null; }
