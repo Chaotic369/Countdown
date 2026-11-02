@@ -207,13 +207,13 @@ input:disabled, select:disabled { opacity: 0.4; }
 
   var nid = 1;
   function mkText() {
-    return { id: nid++, type: 'text', text: 'Make today quietly good.', font: 'Fraunces', size: 34, weight: 500, italic: true, color: '#fff4dc', align: 'center', spacing: 0, tilt: 0,
+    return { id: nid++, type: 'text', text: 'Make today quietly good.', font: 'Fraunces', size: 34, weight: 500, italic: true, color: '#fff4dc', align: 'center', spacing: 0,
       bgOn: true, bg: '#000000', bgOpacity: 30, blur: 14, radius: 24, pad: 22, border: false, borderColor: '#ffffff' };
   }
   function mkCount() {
     return { id: nid++, type: 'count', label: 'New Year 2027', showTitle: true, target: '2027-01-01T00:00',
       units: { years: false, months: false, weeks: false, days: true, hours: true, minutes: true, seconds: true },
-      font: 'seg7', size: 44, weight: 600, italic: false, color: '#ffb000', tilt: 0, showLabels: true, seps: true,
+      font: 'seg7', size: 44, weight: 600, italic: false, color: '#ffb000', showLabels: true, seps: true,
       bgOn: true, bg: '#0b0b0b', bgOpacity: 55, blur: 10, radius: 22, pad: 20, border: false, borderColor: '#ffb000' };
   }
 
@@ -268,7 +268,6 @@ input:disabled, select:disabled { opacity: 0.4; }
   function box(el, w) {
     var s = el.style;
     s.padding = w.pad + 'px'; s.borderRadius = w.radius + 'px';
-        s.transform = w.tilt ? 'rotate(' + w.tilt + 'deg)' : 'none';
     s.background = w.bgOn ? rgba(w.bg, w.bgOpacity / 100) : 'transparent';
     var bf = (w.bgOn && w.blur > 0) ? 'blur(' + w.blur + 'px) saturate(1.2)' : 'none';
     s.backdropFilter = bf; s.webkitBackdropFilter = bf;
@@ -373,7 +372,6 @@ input:disabled, select:disabled { opacity: 0.4; }
       if (!(cnt && w.font === 'seg7')) c += rng('weight', 'Weight', 300, 900, 100, '');
       if (!cnt) c += rng('spacing', 'Letter spacing', -2, 12, 0.5, 'px');
       c += col('color', cnt ? 'Digit colour' : 'Text colour');
-            c += rng('tilt', 'Tilt', -45, 45, 1, '°');
       if (!cnt) {
         c += '<div class="f"><span class="lb">Align</span><div class="seg" role="group" aria-label="Text align">' + ['left', 'center', 'right'].map(function (a) {
           return '<button data-set="align:' + a + '" aria-pressed="' + (w.align === a) + '">' + a.charAt(0).toUpperCase() + a.slice(1) + '</button>';
