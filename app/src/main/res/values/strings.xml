@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Widget Studio</string>
+    <string name="countdown_widget_desc">Live countdown to a date</string>
+    <string name="text_widget_desc">Custom text widget</string>
+</resources>

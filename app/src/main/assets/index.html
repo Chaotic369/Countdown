@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Widget Studio</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #0e1012; color: #fff; padding: 24px; }
+  button { padding: 10px 16px; margin: 6px 6px 0 0; border: 0; border-radius: 12px; background: #1e2226; color: #fff; font-size: 15px; }
+</style>
+</head>
+<body>
+<!-- PLACEHOLDER: replace this whole file with your real Widget Studio index.html -->
+<h2>Widget Studio</h2>
+<p>Replace app/src/main/assets/index.html with your editor file.</p>
+<p>Bridge available in the app: Android.save(type, json), Android.load(type), Android.pin(type). Types: "text", "count".</p>
+<button onclick="Android.save('text', JSON.stringify({text:'Hello', color:'#ffffff', size:34, bgOn:true, bg:'#000000', bgOpacity:30, pad:16}));Android.pin('text')">Test text widget</button>
+<button onclick="Android.save('count', JSON.stringify({label:'New Year 2027', showTitle:true, target:'2027-01-01T00:00', units:{days:true,hours:true,minutes:true}, color:'#ffffff', size:44, showLabels:true, seps:true, bgOn:true, bg:'#0b0b0b', bgOpacity:55, pad:16}));Android.pin('count')">Test countdown widget</button>
+</body>
+</html>
