@@ -218,11 +218,11 @@ input:disabled, select:disabled { opacity: 0.4; }
   };
   var TEXTF = ['Instrument Sans', 'Fraunces', 'Playfair Display', 'Lora', 'Caveat', 'Bebas Neue', 'Space Mono'];
   var DIGITAL = ['Orbitron', 'VT323', 'Share Tech Mono', 'Audiowide', 'Oxanium'];
-  var UNITS = [['years', 'Years'], ['months', 'Months'], ['weeks', 'Weeks'], ['days', 'Days'], ['hours', 'Hours'], ['minutes', 'Minutes'], ['seconds', 'Seconds']];
-  var MS = { weeks: 6048e5, days: 864e5, hours: 36e5, minutes: 6e4, seconds: 1e3 };
+  var UNITS = [['years', 'Years'], ['months', 'Months'], ['weeks', 'Weeks'], ['days', 'Days'], ['hours', 'Hours'], ['minutes', 'Minutes'], ['seconds', 'Seconds'], ['milliseconds', 'Milliseconds']];
+  var MS = { weeks: 6048e5, days: 864e5, hours: 36e5, minutes: 6e4, seconds: 1e3, milliseconds: 1 };
   var PRESETS = [
     ['Days', 'days'], ['Weeks + days', 'weeks,days'], ['Y · M · W · D', 'years,months,weeks,days'],
-    ['D · H · M · S', 'days,hours,minutes,seconds'], ['Seconds', 'seconds'], ['Everything', 'years,months,weeks,days,hours,minutes,seconds']
+    ['D · H · M · S', 'days,hours,minutes,seconds'], ['Seconds', 'seconds'], ['Sec + ms', 'seconds,milliseconds'], ['Everything', 'years,months,weeks,days,hours,minutes,seconds,milliseconds']
   ];
   var UI_THEMES = ['cream', 'dark'];
 
@@ -253,14 +253,14 @@ input:disabled, select:disabled { opacity: 0.4; }
     r.setDate(Math.min(day, last)); return r;
   }
   function breakdown(w) {
-    var out = { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
+    var out = { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
     var t = new Date(w.target), now = new Date();
     if (isNaN(t.getTime()) || t <= now) return out;
     var c = now;
     if (w.units.years) { var y = 0; while (y < 200 && addM(c, 12 * (y + 1)) <= t) y++; out.years = y; c = addM(c, 12 * y); }
     if (w.units.months) { var m = 0; while (m < 2400 && addM(c, m + 1) <= t) m++; out.months = m; c = addM(c, m); }
     var ms = t - c;
-    ['weeks', 'days', 'hours', 'minutes', 'seconds'].forEach(function (k) {
+    ['weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'].forEach(function (k) {
       if (w.units[k]) { var v = Math.floor(ms / MS[k]); out[k] = v; ms -= v * MS[k]; }
     });
     return out;
@@ -302,10 +302,10 @@ input:disabled, select:disabled { opacity: 0.4; }
     var h = '';
     if (w.showTitle && w.label) h += '<div class="cl" style="font-size:' + Math.max(11, Math.round(sz * 0.32)) + 'px;font-family:' + (seg ? 'var(--mono)' : fam) + ';font-style:' + (w.italic ? 'italic' : 'normal') + ';color:' + w.color + '">' + esc(w.label) + '</div>';
     var parts = act.map(function (u) {
-      var v = String(p[u[0]]); if (v.length < 2) v = '0' + v;
+      var v = String(p[u[0]]); while (v.length < (u[0] === 'milliseconds' ? 3 : 2)) v = '0' + v;
       var num = seg ? '<div class="num">' + v.split('').map(function (c) { return dg(c, sz); }).join('') + '</div>'
                     : '<div class="num" style="font-size:' + sz + 'px">' + v + '</div>';
-      var lab = w.showLabels ? '<div class="lab" style="font-size:' + labSz + 'px;font-style:' + (w.italic ? 'italic' : 'normal') + '">' + u[1].toUpperCase() + '</div>' : '';
+      var lab = w.showLabels ? '<div class="lab" style="font-size:' + labSz + 'px;font-style:' + (w.italic ? 'italic' : 'normal') + '">' + (u[0] === 'milliseconds' ? 'MS' : u[1].toUpperCase()) + '</div>' : '';
       return '<div class="u">' + num + lab + '</div>';
     });
     var sep = w.seps ? '<div class="sep" style="font-size:' + sz + 'px">' + (seg ? colon(sz) : ':') + '</div>' : '';
@@ -502,7 +502,24 @@ input:disabled, select:disabled { opacity: 0.4; }
     }
   });
 
-  /* ---------- boot ---------- */
+  /* ---------- fast refresh for milliseconds ---------- */
+    (function msLoop() {
+      var last = 0;
+      function frame(ts) {
+        if (ts - last > 33) {
+          last = ts;
+          var el = document.querySelector('.w[data-type="count"]');
+          if (el) {
+            var w = S.w.filter(function (x) { return x.id === Number(el.dataset.id); })[0];
+            if (w && w.units.milliseconds) fill(el, w);
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+
+    /* ---------- boot ---------- */
   var u0 = null;
   try { u0 = localStorage.getItem('ws-ui'); } catch (err) { }
   if (UI_THEMES.indexOf(u0) < 0) u0 = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'cream';
