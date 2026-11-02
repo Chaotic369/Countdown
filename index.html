@@ -263,6 +263,30 @@ input[type="range"]:disabled { opacity: 0.4; cursor: default; }
 .dt-time b { min-width: 2ch; text-align: center; font-family: var(--mono); font-size: 20px; font-variant-numeric: tabular-nums; }
 .dt-time .colon { font-family: var(--mono); font-size: 20px; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .th, .chip, .ghost, .kind, .tab, .ib { transition: none; } }
+
+/* compact + no outlines + single icon theme toggle */
+.stage-col { display: none !important; }
+.layout { grid-template-columns: minmax(0, 1fr) !important; gap: 10px; }
+.app { max-width: 560px; gap: 10px; }
+body { padding-block: 10px 20px; }
+.brand { font-size: 16px; }
+.themes { display: none !important; }
+.tt { display: grid; place-items: center; width: 38px; height: 38px; border: 0; border-radius: 50%; background: var(--surface); color: var(--fg); padding: 0; margin-left: auto; }
+.tt .sun { display: none; }
+:root[data-ui="dark"] .tt .sun { display: block; }
+:root[data-ui="dark"] .tt .moon { display: none; }
+.panel { padding: 12px; gap: 12px; border-radius: 18px; }
+.ctl { gap: 10px; }
+.kinds { gap: 8px; }
+.kind { padding: 8px 10px; border-radius: 14px; }
+.ki { width: 34px; height: 34px; border-radius: 11px; }
+.chip, .ghost { padding: 6px 11px; }
+.sw { padding: 8px 11px; }
+.tabs { padding: 3px; }
+.tab { padding: 7px 8px; }
+.chip, .ghost, .kind, .cs, .cp-c, .dd-t, .dt-t, .panel, .stage, .seg, .tag, .themes, .wp, .cp-dot, select, input[type="text"], input[type="datetime-local"], input[type="color"], textarea { border: 0 !important; }
+.cs[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--fg); }
+.dt-t[aria-expanded="true"] { box-shadow: 0 0 0 1.5px var(--accent); }
 </style>
 
 <div class="app">
@@ -272,7 +296,8 @@ input[type="range"]:disabled { opacity: 0.4; cursor: default; }
       <button class="th" role="radio" data-ui="cream" aria-checked="false"><i style="--a:#f1ebdc;--b:#3b5c46"></i>Cream</button>
             <button class="th" role="radio" data-ui="dark" aria-checked="false"><i style="--a:#0e1012;--b:#f2f3f5"></i>Dark</button>
     </div>
-  </header>
+  <button class="tt" type="button" aria-label="Toggle theme" onclick="var a=document.querySelectorAll('.th');if(a.length>1)a[a[0].getAttribute('aria-checked')==='true'?1:0].click()"><svg class="moon" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="currentColor"/></svg><svg class="sun" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="currentColor"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    </header>
 
   <main class="layout">
     <section class="stage-col" aria-label="Home screen preview">
