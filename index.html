@@ -11,8 +11,8 @@
 :root {
   --bg: #f1ebdc; --surface: #faf6ec; --surface2: #eae3d0; --fg: #2b2619; --muted: #766c56;
   --line: #ddd4bd; --accent: #3b5c46; --accent-fg: #faf6ec;
-  --ui: 'Instrument Sans', system-ui, sans-serif;
-  --mono: 'Geist Mono', ui-monospace, monospace;
+  --ui: 'Lexend Deca', system-ui, sans-serif;
+    --mono: 'Lexend Deca', system-ui, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-ui]) {
@@ -325,10 +325,7 @@ html:has(body.side-open) { overflow: hidden !important; }
 .si.on .si-b { background: var(--accent); color: var(--accent-fg); }
 .si.on .ki { background: color-mix(in srgb, var(--accent-fg) 16%, transparent); }
 .si-x { width: 34px; height: 34px; flex: none; border: 0; border-radius: 10px; background: transparent; color: var(--muted); font-size: 20px; line-height: 1; padding: 0; }
-.sd-s { position: relative; margin-top: 12px; }
-.sd-s svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
-.sd-s input { width: 100%; border: 0; border-radius: 12px; background: var(--surface2); color: var(--fg); padding: 10px 12px 10px 36px; font-size: 14px; outline: none; -webkit-appearance: none; appearance: none; }
-.sd-s input:focus { box-shadow: 0 0 0 1.5px var(--accent); }
+
 .si-b .ki { flex: none; }
 .si-w { min-width: 0; display: flex; flex-direction: column; gap: 1px; }
 .si-s { font-family: var(--mono); font-size: 11px; opacity: 0.65; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -336,9 +333,11 @@ html:has(body.side-open) { overflow: hidden !important; }
 .si-x:disabled { opacity: 0.3; cursor: default; }
 .si-x:not(:disabled):hover { background: var(--surface2); color: var(--fg); }
 .sd-f { margin-top: 16px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.w { --mono: 'Geist Mono', ui-monospace, monospace; }
 @media (prefers-reduced-motion: reduce) { .sd, .sd-ov { transition: none; } }
 </style>
 
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap">
 <div class="app">
   <header class="top">
     <div class="brand"><button class="mn" type="button" data-side="open" aria-label="Open widgets"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button><span class="mark"></span>Countdown</div>
@@ -360,8 +359,7 @@ html:has(body.side-open) { overflow: hidden !important; }
           <button type="button" data-add="text">Aa &nbsp;Text</button>
           <button type="button" data-add="count">88 &nbsp;Countdown</button>
         </div>
-        <div class="sd-s"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="search" id="side-search" placeholder="Search widgets" autocomplete="off" spellcheck="false" aria-label="Search widgets"></div>
-            <div class="sd-l" id="side-list"></div>
+        <div class="sd-l" id="side-list"></div>
             <div class="sd-f" id="side-foot"></div>
       </aside>
 
@@ -474,8 +472,7 @@ html:has(body.side-open) { overflow: hidden !important; }
   }
 
   /* ---------- sidebar ---------- */
-    var sideNew = false, sideQ = '';
-      var ICO_DUP = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+    var sideNew = false;
       var ICO_DEL = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
       function sideName(x) { return ((x.type === 'text' ? x.text : x.label) || '').trim() || (x.type === 'text' ? 'Text' : 'Countdown'); }
       function sideSub(x) {
@@ -485,15 +482,14 @@ html:has(body.side-open) { overflow: hidden !important; }
       function renderSide() {
         var host = $('#side-list'); if (!host) return;
         var info = { text: ['Text widgets', 'Aa'], count: ['Countdown widgets', '88'] };
-        var q = sideQ.trim().toLowerCase(), h = '';
+        var h = '';
         ['text', 'count'].forEach(function (t) {
           var all = S.w.filter(function (x) { return x.type === t; });
-          var items = all.filter(function (x) { return !q || sideName(x).toLowerCase().indexOf(q) > -1; });
-          h += '<div class="sd-g"><span>' + info[t][0] + '</span><b>' + (q ? items.length + ' / ' + all.length : all.length) + '</b></div>';
-          if (!items.length) h += '<p class="sd-e">' + (q ? 'No match' : 'None yet') + '</p>';
+          var items = all;
+          h += '<div class="sd-g"><span>' + info[t][0] + '</span><b>' + all.length + '</b></div>';
+          if (!items.length) h += '<p class="sd-e">None yet</p>';
           items.forEach(function (x) {
             h += '<div class="si' + (x.id === S.sel ? ' on' : '') + '"><button type="button" class="si-b" data-pick="' + x.id + '"><span class="ki">' + info[t][1] + '</span><span class="si-w"><span class="si-t">' + esc(sideName(x)) + '</span><span class="si-s">' + esc(sideSub(x)) + '</span></span></button>' +
-              '<button type="button" class="si-x" data-dup="' + x.id + '" aria-label="Duplicate widget"' + (S.w.length >= 30 ? ' disabled' : '') + '>' + ICO_DUP + '</button>' +
               '<button type="button" class="si-x" data-del="' + x.id + '" aria-label="Delete widget"' + (S.w.length < 2 ? ' disabled' : '') + '>' + ICO_DEL + '</button></div>';
           });
         });
@@ -510,9 +506,7 @@ html:has(body.side-open) { overflow: hidden !important; }
       renderSide();
     }
 
-    document.addEventListener('input', function (e) {
-        if (e.target && e.target.id === 'side-search') { sideQ = e.target.value; renderSide(); }
-      });
+    
       (function () {
         var x0 = 0, y0 = 0, on = false;
         document.addEventListener('touchstart', function (e) {
@@ -820,16 +814,7 @@ html:has(body.side-open) { overflow: hidden !important; }
     if (b.dataset.side) { toggleSide(b.dataset.side === 'open'); return; }
         if (b.dataset.newtoggle) { sideNew = !sideNew; renderSide(); return; }
         if (b.dataset.pick) { S.sel = Number(b.dataset.pick); S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(); toggleSide(false); return; }
-        if (b.dataset.dup) {
-              if (S.w.length >= 30) return;
-              var dsid = Number(b.dataset.dup), dsrc = null, dix = 0;
-              S.w.forEach(function (x, i) { if (x.id === dsid) { dsrc = x; dix = i; } });
-              if (!dsrc) return;
-              var dcp = JSON.parse(JSON.stringify(dsrc)); dcp.id = nid++;
-              S.w.splice(dix + 1, 0, dcp); S.sel = dcp.id; S.dd = false; S.cp = null; S.dt = false;
-              renderWidgets(); renderPanel(); return;
-            }
-            if (b.dataset.del) {
+        if (b.dataset.del) {
           if (S.w.length < 2) return;
           var did = Number(b.dataset.del);
           S.w = S.w.filter(function (x) { return x.id !== did; });
