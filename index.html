@@ -9,8 +9,8 @@
 /* Layout: a wallpaper stage with live widgets beside a tabbed editor panel; stacks on phones.
    Tokens: bg / surface / surface2 / fg / muted / line / accent, redefined per app theme. */
 :root {
-  --bg: #f3f4f6; --surface: #ffffff; --surface2: #eceef1; --fg: #14171c; --muted: #656c76;
-  --line: #dfe2e7; --accent: #1d4ed8; --accent-fg: #ffffff;
+  --bg: #f1ebdc; --surface: #faf6ec; --surface2: #eae3d0; --fg: #2b2619; --muted: #766c56;
+  --line: #ddd4bd; --accent: #3b5c46; --accent-fg: #faf6ec;
   --ui: 'Instrument Sans', system-ui, sans-serif;
   --mono: 'Geist Mono', ui-monospace, monospace;
 }
@@ -24,10 +24,6 @@
   --bg: #0e1012; --surface: #16191c; --surface2: #1e2226; --fg: #eceef0; --muted: #8a9099;
   --line: #262b30; --accent: #f2f3f5; --accent-fg: #0e1012; color-scheme: dark;
 }
-:root[data-ui="bright"] {
-  --bg: #f3f4f6; --surface: #ffffff; --surface2: #eceef1; --fg: #14171c; --muted: #656c76;
-  --line: #dfe2e7; --accent: #1d4ed8; --accent-fg: #ffffff; color-scheme: light;
-}
 :root[data-ui="dark"] {
   --bg: #0e1012; --surface: #16191c; --surface2: #1e2226; --fg: #eceef0; --muted: #8a9099;
   --line: #262b30; --accent: #f2f3f5; --accent-fg: #0e1012; color-scheme: dark;
@@ -36,11 +32,6 @@
   --bg: #f1ebdc; --surface: #faf6ec; --surface2: #eae3d0; --fg: #2b2619; --muted: #766c56;
   --line: #ddd4bd; --accent: #3b5c46; --accent-fg: #faf6ec; color-scheme: light;
 }
-:root[data-ui="amber"] {
-  --bg: #150e04; --surface: #1e1407; --surface2: #2a1c0a; --fg: #ffd48a; --muted: #b0853f;
-  --line: #3a2a10; --accent: #ffb000; --accent-fg: #1a1004; color-scheme: dark;
-}
-
 * { box-sizing: border-box; }
 body {
   background: var(--bg); color: var(--fg); font-family: var(--ui); font-size: 15px; line-height: 1.45;
@@ -60,7 +51,7 @@ button { cursor: pointer; }
 .mark { width: 18px; height: 18px; border-radius: 5px; background: var(--accent); position: relative; }
 .mark::after { content: ""; position: absolute; inset: 5px; border-radius: 2px; background: var(--bg); }
 .tag { font-family: var(--mono); font-size: 11px; font-weight: 400; color: var(--muted); border: 1px solid var(--line); padding: 2px 7px; border-radius: 6px; }
-.themes { display: flex; gap: 4px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.themes { display: flex; margin-left: auto; gap: 4px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
 .th { display: flex; align-items: center; gap: 7px; border: 0; background: transparent; padding: 7px 11px; border-radius: 9px; font-size: 13px; color: var(--muted); }
 .th i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); background: linear-gradient(135deg, var(--a) 50%, var(--b) 50%); }
 .th[aria-checked="true"] { background: var(--surface2); color: var(--fg); }
@@ -84,7 +75,7 @@ button { cursor: pointer; }
 .stage[data-wall="paper"] { background: #e8e0cc; }
 .stage[data-wall="check"] { background: repeating-conic-gradient(#cfcfcf 0% 25%, #f5f5f5 0% 50%) 50% / 22px 22px; }
 .widgets { display: flex; flex-direction: column; align-items: center; gap: 22px; max-width: 100%; }
-.w { max-width: 100%; color: #fff; cursor: pointer; }
+.w { max-width: 100%; color: #fff; }
 .tx { line-height: 1.15; white-space: pre-wrap; overflow-wrap: anywhere; }
 .cl { margin-bottom: 0.55em; text-align: center; letter-spacing: 0.08em; text-transform: uppercase; }
 .cd { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: 0.35em 0.5em; font-variant-numeric: tabular-nums; }
@@ -109,7 +100,13 @@ button { cursor: pointer; }
 .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 .ghost { border: 1px solid var(--line); background: transparent; padding: 6px 11px; border-radius: 9px; font-size: 13px; }
 .ghost:hover { background: var(--surface2); }
-.adds { display: flex; gap: 6px; }
+.kinds { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.kind { display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: transparent; }
+.kind:hover { background: var(--surface2); }
+.kind[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+.kt { font-weight: 600; font-size: 15px; }
+.ks { font-size: 12px; color: var(--muted); }
+.kind[aria-pressed="true"] .ks { color: inherit; opacity: 0.75; }
 .tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); }
 .tab { border: 0; background: transparent; padding: 9px 14px; font-size: 14px; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
 .tab[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); font-weight: 600; }
@@ -148,10 +145,8 @@ input:disabled, select:disabled { opacity: 0.4; }
   <header class="top">
     <div class="brand"><span class="mark"></span>Widget Studio <span class="tag">demo</span></div>
     <div class="themes" role="radiogroup" aria-label="App theme">
-      <button class="th" role="radio" data-ui="bright" aria-checked="false"><i style="--a:#f3f4f6;--b:#1d4ed8"></i>Bright</button>
-      <button class="th" role="radio" data-ui="dark" aria-checked="false"><i style="--a:#0e1012;--b:#f2f3f5"></i>Dark</button>
       <button class="th" role="radio" data-ui="cream" aria-checked="false"><i style="--a:#f1ebdc;--b:#3b5c46"></i>Cream</button>
-      <button class="th" role="radio" data-ui="amber" aria-checked="false"><i style="--a:#150e04;--b:#ffb000"></i>Amber</button>
+            <button class="th" role="radio" data-ui="dark" aria-checked="false"><i style="--a:#0e1012;--b:#f2f3f5"></i>Dark</button>
     </div>
   </header>
 
@@ -165,7 +160,7 @@ input:disabled, select:disabled { opacity: 0.4; }
         <button class="chip" data-wall="paper" aria-pressed="false">Paper</button>
         <button class="chip" data-wall="check" aria-pressed="false">Transparency grid</button>
       </div>
-      <p class="hint">Tap a widget to edit it. Switch to the grid wallpaper to see transparent backgrounds.</p>
+      <p class="hint">Choose Text or Countdown in the editor to preview it here. Switch to the grid wallpaper to see transparent backgrounds.</p>
     </section>
 
     <section class="panel" id="panel" aria-label="Widget editor"></section>
@@ -199,7 +194,7 @@ input:disabled, select:disabled { opacity: 0.4; }
     ['Days', 'days'], ['Weeks + days', 'weeks,days'], ['Y · M · W · D', 'years,months,weeks,days'],
     ['D · H · M · S', 'days,hours,minutes,seconds'], ['Seconds', 'seconds'], ['Everything', 'years,months,weeks,days,hours,minutes,seconds']
   ];
-  var UI_THEMES = ['bright', 'dark', 'cream', 'amber'];
+  var UI_THEMES = ['cream', 'dark'];
 
   var nid = 1;
   function mkText() {
@@ -207,7 +202,7 @@ input:disabled, select:disabled { opacity: 0.4; }
       bgOn: true, bg: '#000000', bgOpacity: 30, blur: 14, radius: 24, pad: 22, border: false, borderColor: '#ffffff' };
   }
   function mkCount() {
-    return { id: nid++, type: 'count', label: 'New Year 2027', target: '2027-01-01T00:00',
+    return { id: nid++, type: 'count', label: 'New Year 2027', showTitle: true, target: '2027-01-01T00:00',
       units: { years: false, months: false, weeks: false, days: true, hours: true, minutes: true, seconds: true },
       font: 'seg7', size: 44, weight: 600, italic: false, color: '#ffb000', glow: true, showLabels: true, seps: true,
       bgOn: true, bg: '#0b0b0b', bgOpacity: 55, blur: 10, radius: 22, pad: 20, border: false, borderColor: '#ffb000' };
@@ -275,7 +270,7 @@ input:disabled, select:disabled { opacity: 0.4; }
     var labSz = Math.max(9, Math.round(sz * 0.26));
     var act = UNITS.filter(function (u) { return w.units[u[0]]; });
     var h = '';
-    if (w.label) h += '<div class="cl" style="font-size:' + Math.max(11, Math.round(sz * 0.32)) + 'px;font-family:' + (seg ? 'var(--mono)' : fam) + ';font-style:' + (w.italic ? 'italic' : 'normal') + ';color:' + w.color + '">' + esc(w.label) + '</div>';
+    if (w.showTitle && w.label) h += '<div class="cl" style="font-size:' + Math.max(11, Math.round(sz * 0.32)) + 'px;font-family:' + (seg ? 'var(--mono)' : fam) + ';font-style:' + (w.italic ? 'italic' : 'normal') + ';color:' + w.color + '">' + esc(w.label) + '</div>';
     var parts = act.map(function (u) {
       var v = String(p[u[0]]); if (v.length < 2) v = '0' + v;
       var num = seg ? '<div class="num">' + v.split('').map(function (c) { return dg(c, sz); }).join('') + '</div>'
@@ -290,11 +285,10 @@ input:disabled, select:disabled { opacity: 0.4; }
   }
   function renderWidgets() {
     var host = $('#widgets'); host.textContent = '';
-    S.w.forEach(function (w) {
-      var el = document.createElement('div');
-      el.className = 'w' + (w.id === S.sel ? ' sel' : '');
-      el.dataset.id = w.id; el.dataset.type = w.type; el.tabIndex = 0;
-      el.setAttribute('role', 'button'); el.setAttribute('aria-label', 'Edit ' + nm(w) + ' widget');
+    S.w.filter(function (x) { return x.id === S.sel; }).forEach(function (w) {
+          var el = document.createElement('div');
+          el.className = 'w';
+          el.dataset.id = w.id; el.dataset.type = w.type;
       box(el, w);
       if (w.type === 'text') {
         var t = document.createElement('div'); t.className = 'tx'; t.textContent = w.text || ' ';
@@ -308,11 +302,12 @@ input:disabled, select:disabled { opacity: 0.4; }
   }
 
   /* ---------- panel ---------- */
-  function chipsHTML() {
-    return S.w.map(function (x, i) {
-      return '<button class="chip" data-sel="' + x.id + '" aria-pressed="' + (x.id === S.sel) + '">' + (i + 1) + ' · ' + esc(nm(x)) + '</button>';
-    }).join('');
-  }
+  function kindsHTML() {
+      var info = { text: ['Text', 'Words only'], count: ['Countdown', 'Live timer, optional title'] };
+      return '<div class="kinds" role="group" aria-label="Widget type">' + S.w.map(function (x) {
+        return '<button class="kind" data-sel="' + x.id + '" aria-pressed="' + (x.id === S.sel) + '"><span class="kt">' + info[x.type][0] + '</span><span class="ks">' + info[x.type][1] + '</span></button>';
+      }).join('') + '</div>';
+    }
   function renderPanel(focusQ) {
     var w = cur(), p = $('#panel');
     if (!w) { p.innerHTML = '<p class="hint">Add a widget to start.</p>'; return; }
@@ -336,8 +331,8 @@ input:disabled, select:disabled { opacity: 0.4; }
       return '<div class="f"><label for="c-font">Font</label><select id="c-font" data-k="font">' + (cnt ? d + t : t + d) + '</select></div>';
     }
 
-    var h = '<div class="ph"><span class="lb">Widgets</span><div class="adds"><button class="ghost" data-add="text">+ Text</button><button class="ghost" data-add="count">+ Countdown</button></div></div>';
-    h += '<div class="wl" id="wl">' + chipsHTML() + '</div>';
+    var h = '<span class="lb">Choose a widget</span>' + kindsHTML();
+        h += '<span class="lb">' + (cnt ? 'Countdown' : 'Text') + ' settings</span>';
     h += '<div class="tabs" role="tablist">' + [['content', 'Content'], ['style', 'Style'], ['bg', 'Background']].map(function (t) {
       return '<button class="tab" role="tab" data-tab="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' + t[1] + '</button>';
     }).join('') + '</div>';
@@ -347,7 +342,8 @@ input:disabled, select:disabled { opacity: 0.4; }
       if (!cnt) {
         c += '<div class="f"><label for="c-text">Text</label><textarea id="c-text" data-k="text" rows="3">' + esc(w.text) + '</textarea></div>';
       } else {
-        c += '<div class="f"><label for="c-label">Label</label><input type="text" id="c-label" data-k="label" value="' + esc(w.label) + '"></div>';
+        c += chk('showTitle', 'Show title text above the countdown');
+                c += '<div class="f"><label for="c-label">Title text</label><input type="text" id="c-label" data-k="label" value="' + esc(w.label) + '"' + (w.showTitle ? '' : ' disabled') + '></div>';
         c += '<div class="f"><label for="c-target">Counts down to</label><input type="datetime-local" id="c-target" data-k="target" value="' + esc(w.target) + '"></div>';
         c += '<div class="f"><span class="lb">Quick mixes</span><div class="row">' + PRESETS.map(function (x) { return '<button class="ghost" data-preset="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '</div></div>';
         c += '<div class="f"><span class="lb">Show these units</span><div class="row">' + UNITS.map(function (u) {
@@ -378,7 +374,6 @@ input:disabled, select:disabled { opacity: 0.4; }
       if (w.border) c += col('borderColor', 'Border colour');
     }
     h += '<div class="ctl">' + c + '</div>';
-    h += '<button class="danger" data-remove' + (S.w.length < 2 ? ' disabled' : '') + '>Remove this widget</button>';
     p.innerHTML = h;
     if (focusQ) { var f = p.querySelector(focusQ); if (f) f.focus(); }
   }
@@ -398,7 +393,6 @@ input:disabled, select:disabled { opacity: 0.4; }
     setVal(t);
     var o = document.getElementById('o-' + t.dataset.k);
     if (o) o.textContent = t.value + (t.dataset.u || '');
-    if (t.dataset.k === 'text' || t.dataset.k === 'label') $('#wl').innerHTML = chipsHTML();
     renderWidgets();
   });
   panel.addEventListener('change', function (e) {
@@ -463,7 +457,7 @@ input:disabled, select:disabled { opacity: 0.4; }
   /* ---------- boot ---------- */
   var u0 = null;
   try { u0 = localStorage.getItem('ws-ui'); } catch (err) { }
-  if (UI_THEMES.indexOf(u0) < 0) u0 = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'bright';
+  if (UI_THEMES.indexOf(u0) < 0) u0 = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'cream';
   setUI(u0); applyWall(); renderWidgets(); renderPanel();
 
   setInterval(function () {
