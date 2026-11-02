@@ -335,7 +335,35 @@ html:has(body.side-open) { overflow: hidden !important; }
 .si-x:not(:disabled):hover { background: var(--surface2); color: var(--fg); }
 .sd-f { margin-top: 16px; text-align: center; font-family: var(--mono); font-size: 11px; color: var(--muted); }
 .w { --mono: 'Geist Mono', ui-monospace, monospace; }
-@media (prefers-reduced-motion: reduce) { .sd, .sd-ov { transition: none; } }
+.sd-new { flex-wrap: wrap; }
+.sd-new button { flex: 1 1 28%; }
+.wph { position: relative; overflow: hidden; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; cursor: pointer; touch-action: manipulation; }
+.pi { display: block; width: 100%; height: 100%; pointer-events: none; }
+.pi.a-fade { animation: pwf 0.7s ease; }
+.pi.a-slide { animation: pws 0.5s ease; }
+.pi.a-zoom { animation: pwz 0.7s ease; }
+@keyframes pwf { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pws { from { transform: translateX(14%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes pwz { from { transform: scale(1.12); opacity: 0; } to { transform: none; opacity: 1; } }
+.pe { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; padding: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.85); }
+.pe b { font-weight: 600; font-size: 14px; }
+.pd { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
+.pd i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); }
+.pd i.on { background: #fff; }
+.pc { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.45); color: #fff; }
+.pp { position: absolute; top: 10px; left: 10px; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.5); color: #fff; pointer-events: none; }
+.pg { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; }
+.pt { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
+.pt.on { box-shadow: 0 0 0 2px var(--accent); }
+.pt-b { display: block; width: 100%; height: 100%; border: 0; padding: 0; background-color: var(--surface2); background-size: cover; background-position: center; }
+.pt-x { position: absolute; top: 4px; right: 4px; width: 22px; height: 22px; border: 0; border-radius: 50%; background: rgba(0, 0, 0, 0.6); color: #fff; font-size: 15px; line-height: 1; padding: 0; }
+.pm { position: fixed; z-index: 80; min-width: 190px; display: flex; flex-direction: column; padding: 6px; border-radius: 16px; background: var(--surface); color: var(--fg); border: 1px solid var(--line); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45); }
+.pm button { border: 0; background: transparent; text-align: left; padding: 11px 12px; border-radius: 10px; font-size: 14px; font-weight: 500; }
+.pm button:hover { background: var(--surface2); }
+.pv { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgba(0, 0, 0, 0.92); padding: 16px; }
+.pv img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 12px; }
+.pv-x { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: 14px; width: 40px; height: 40px; border: 0; border-radius: 50%; background: rgba(255, 255, 255, 0.16); color: #fff; font-size: 24px; line-height: 1; padding: 0; }
+@media (prefers-reduced-motion: reduce) { .sd, .sd-ov { transition: none; } .pi { animation: none !important; } }
 </style>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@300;400;500;600;700&display=swap">
@@ -359,6 +387,7 @@ html:has(body.side-open) { overflow: hidden !important; }
         <div class="sd-new" id="side-new" hidden>
           <button type="button" data-add="text">Aa &nbsp;Text</button>
           <button type="button" data-add="count">88 &nbsp;Countdown</button>
+                    <button type="button" data-add="photo">Ph &nbsp;Photos</button>
         </div>
         <div class="sd-l" id="side-list"></div>
             <div class="sd-f" id="side-foot"></div>
@@ -475,16 +504,17 @@ html:has(body.side-open) { overflow: hidden !important; }
   /* ---------- sidebar ---------- */
     var sideNew = false;
       var ICO_DEL = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-      function sideName(x) { return ((x.type === 'text' ? x.text : x.label) || '').trim() || (x.type === 'text' ? 'Text' : 'Countdown'); }
+      function sideName(x) { return ((x.type === 'text' ? x.text : x.label) || '').trim() || (x.type === 'text' ? 'Text' : x.type === 'photo' ? 'Photos' : 'Countdown'); }
       function sideSub(x) {
         if (x.type === 'count') { var tt = parseT(x.target); return tt.d + ' ' + MON[tt.m].slice(0, 3) + ' ' + tt.y + ', ' + p2(tt.hh) + ':' + p2(tt.mm); }
-        return x.font + ' · ' + x.size + 'px';
+        if (x.type === 'photo') return x.photos.length + ' photo' + (x.photos.length === 1 ? '' : 's') + ' · ' + (x.auto ? x.interval + 's' : 'manual');
+                return x.font + ' · ' + x.size + 'px';
       }
       function renderSide() {
         var host = $('#side-list'); if (!host) return;
-        var info = { text: ['Text widgets', 'Aa'], count: ['Countdown widgets', '88'] };
+        var info = { text: ['Text widgets', 'Aa'], count: ['Countdown widgets', '88'], photo: ['Photo widgets', 'Ph'] };
         var h = '';
-        ['text', 'count'].forEach(function (t) {
+        ['text', 'count', 'photo'].forEach(function (t) {
           var all = S.w.filter(function (x) { return x.type === t; });
           var items = all;
           h += '<div class="sd-g"><span>' + info[t][0] + '</span><b>' + all.length + '</b></div>';
@@ -525,7 +555,94 @@ html:has(body.side-open) { overflow: hidden !important; }
       })();
 
       /* ---------- widgets ---------- */
-  function box(el, w) {
+  /* ---------- photo widgets ---------- */
+    function mkPhoto() {
+      return { id: nid++, type: 'photo', label: 'Photos', photos: [], idx: 0, last: Date.now(), paused: false,
+        auto: true, interval: 5, shuffle: false, loop: true, showDots: true, trans: 'fade',
+        width: 260, height: 260, fit: 'cover', radius: 28, opacity: 100, pad: 0, bg: '#ffffff', border: false, borderColor: '#ffffff', shadow: true,
+        brightness: 100, gray: 0, tap: 'next', lp: 'menu', lpTime: 550,
+        mEdit: true, mNext: true, mPrev: true, mShuffle: true, mPause: true, mView: true, mRemove: true };
+    }
+    function photoBox(el, w) {
+      var s = el.style; el.classList.add('wph');
+      s.width = w.width + 'px'; s.height = w.height + 'px'; s.padding = w.pad + 'px';
+      s.borderRadius = w.radius + 'px'; s.opacity = w.opacity / 100;
+      s.background = w.pad > 0 ? w.bg : 'rgba(0, 0, 0, 0.25)';
+      s.boxShadow = w.shadow ? '0 10px 30px rgba(0, 0, 0, 0.35)' : 'none';
+      s.border = '1.5px solid ' + (w.border ? w.borderColor : 'transparent');
+    }
+    function fillPhoto(el, w, anim) {
+      var n = w.photos.length, p = w.photos[w.idx], r = Math.max(0, w.radius - w.pad), h = '';
+      if (!p) {
+        h = '<div class="pe"><b>No photos yet</b><span>Add photos in the editor</span></div>';
+      } else {
+        h = '<img class="pi' + (anim && w.trans !== 'none' ? ' a-' + w.trans : '') + '" src="' + p.url + '" alt="" draggable="false" style="object-fit:' + w.fit + ';border-radius:' + r + 'px;filter:brightness(' + w.brightness + '%) grayscale(' + w.gray + '%)">';
+        if (w.showDots && n > 1) {
+          if (n <= 12) h += '<div class="pd">' + w.photos.map(function (x, i) { return '<i' + (i === w.idx ? ' class="on"' : '') + '></i>'; }).join('') + '</div>';
+          else h += '<div class="pd"><span class="pc">' + (w.idx + 1) + ' / ' + n + '</span></div>';
+        }
+        if (w.paused && w.auto && n > 1) h += '<span class="pp">Paused</span>';
+      }
+      el.innerHTML = h;
+    }
+    function photoEl() { return document.querySelector('.w[data-type="photo"]'); }
+    function photoShow(w, anim) { var el = photoEl(); if (el && Number(el.dataset.id) === w.id) fillPhoto(el, w, anim); }
+    function photoStep(w, dir) {
+      var n = w.photos.length; if (n < 2) return false;
+      var i = w.idx;
+      if (w.shuffle) { do { i = Math.floor(Math.random() * n); } while (i === w.idx); }
+      else { i += dir; if (i >= n || i < 0) { if (!w.loop) return false; i = (i + n) % n; } }
+      w.idx = i; w.last = Date.now(); return true;
+    }
+    function addPhotos(list) {
+      var w = cur(); if (!w || w.type !== 'photo') return;
+      var files = Array.prototype.slice.call(list || []).filter(function (f) { return /^image\//.test(f.type); });
+      if (!files.length) return;
+      files.forEach(function (f) { w.photos.push({ url: URL.createObjectURL(f), name: f.name }); });
+      w.last = Date.now(); renderWidgets(); renderPanel();
+    }
+    function closePM() { var m = $('.pm'); if (m) m.remove(); }
+    function closePV() { var v = $('.pv'); if (v) v.remove(); }
+    function photoView(w) {
+      var p = w.photos[w.idx]; if (!p) return;
+      closePV();
+      var v = document.createElement('div'); v.className = 'pv'; v.setAttribute('role', 'dialog');
+      v.innerHTML = '<img src="' + p.url + '" alt=""><button type="button" class="pv-x" aria-label="Close">×</button>';
+      document.body.appendChild(v);
+    }
+    function photoAct(w, a) {
+      if (a === 'next') { if (photoStep(w, 1)) photoShow(w, true); }
+      else if (a === 'prev') { if (photoStep(w, -1)) photoShow(w, true); }
+      else if (a === 'pause') { w.paused = !w.paused; w.last = Date.now(); photoShow(w, false); }
+      else if (a === 'view') { photoView(w); }
+      else if (a === 'shuffle') { w.shuffle = !w.shuffle; renderPanel(); }
+      else if (a === 'remove') {
+        if (w.photos.length) {
+          var gone = w.photos.splice(w.idx, 1)[0];
+          try { URL.revokeObjectURL(gone.url); } catch (err) { }
+          w.idx = Math.max(0, Math.min(w.idx, w.photos.length - 1));
+          renderWidgets(); renderPanel();
+        }
+      }
+      else if (a === 'edit') {
+        S.tab = 'content'; renderPanel();
+        var pn = $('#panel'); if (pn && pn.scrollIntoView) pn.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    function openPM(w, el) {
+      closePM();
+      var items = [['mEdit', 'edit', 'Edit widget'], ['mNext', 'next', 'Next photo'], ['mPrev', 'prev', 'Previous photo'],
+        ['mShuffle', 'shuffle', w.shuffle ? 'Shuffle: on' : 'Shuffle: off'], ['mPause', 'pause', w.paused ? 'Resume slideshow' : 'Pause slideshow'],
+        ['mView', 'view', 'Full screen'], ['mRemove', 'remove', 'Remove this photo']].filter(function (x) { return w[x[0]]; });
+      if (!items.length) return;
+      var m = document.createElement('div'); m.className = 'pm'; m.setAttribute('role', 'menu');
+      m.innerHTML = items.map(function (x) { return '<button type="button" role="menuitem" data-pm="' + x[1] + '">' + x[2] + '</button>'; }).join('');
+      document.body.appendChild(m);
+      var r = el.getBoundingClientRect(), mw = m.offsetWidth, mh = m.offsetHeight;
+      m.style.left = Math.max(8, Math.min(window.innerWidth - mw - 8, r.left + r.width / 2 - mw / 2)) + 'px';
+      m.style.top = Math.max(8, Math.min(window.innerHeight - mh - 8, r.top + r.height / 2 - mh / 2)) + 'px';
+    }
+    function box(el, w) {
     var s = el.style;
     s.padding = w.pad + 'px'; s.borderRadius = w.radius + 'px';
     s.background = w.bgOn ? rgba(w.bg, w.bgOpacity / 100) : 'transparent';
@@ -557,8 +674,9 @@ html:has(body.side-open) { overflow: hidden !important; }
           var el = document.createElement('div');
           el.className = 'w';
           el.dataset.id = w.id; el.dataset.type = w.type;
-      box(el, w);
-      if (w.type === 'text') {
+      if (w.type === 'photo') { photoBox(el, w); fillPhoto(el, w, false); host.appendChild(el); return; }
+            box(el, w);
+            if (w.type === 'text') {
         var t = document.createElement('div'); t.className = 'tx'; t.textContent = w.text || ' ';
         var s = t.style;
         s.fontFamily = FONTS[w.font] || FONTS['Fraunces']; s.fontSize = w.size + 'px'; s.fontWeight = w.weight;
@@ -638,7 +756,7 @@ html:has(body.side-open) { overflow: hidden !important; }
       return out + '</div>';
     }
     function kindsHTML() {
-      var info = { text: ['Text', 'Words only', 'Aa'], count: ['Countdown', 'Live timer, optional title', '88'] };
+      var info = { text: ['Text', 'Words only', 'Aa'], count: ['Countdown', 'Live timer, optional title', '88'], photo: ['Photos', 'Slideshow of your pictures', 'Ph'] };
       return '<div class="kinds" role="group" aria-label="Widget type">' + S.w.map(function (x) {
         return '<button class="kind" data-sel="' + x.id + '" aria-pressed="' + (x.id === S.sel) + '"><span class="ki">' + info[x.type][2] + '</span><span class="kt">' + info[x.type][0] + '</span><span class="ks">' + info[x.type][1] + '</span></button>';
       }).join('') + '</div>';
@@ -696,14 +814,66 @@ html:has(body.side-open) { overflow: hidden !important; }
             '<div class="dd-l" role="listbox" aria-labelledby="l-font"' + (S.dd ? '' : ' hidden') + '>' + list + '</div></div></div>';
         }
 
-    var h = kindsHTML();
+    function opts(k, l, list) {
+          return '<div class="f"><span class="lb">' + l + '</span><div class="row">' + list.map(function (o) {
+            return '<button type="button" class="chip" data-set="' + k + ':' + o[0] + '" aria-pressed="' + (w[k] === o[0]) + '">' + o[1] + '</button>';
+          }).join('') + '</div></div>';
+        }
+        function photoPanel() {
+          var o = '', n = w.photos.length;
+          if (S.tab === 'content') {
+            o += sh('Widget');
+            o += '<div class="f"><label for="c-label">Widget name</label><input type="text" id="c-label" data-k="label" value="' + esc(w.label) + '"></div>';
+            o += sh('Photos');
+            o += '<div class="f"><div class="row"><button type="button" class="ghost" data-padd="1">Add photos</button>' + (n ? '<button type="button" class="ghost" data-pclear="1">Remove all</button>' : '') + '</div><input type="file" id="photo-file" accept="image/*" multiple hidden></div>';
+            if (n) {
+              o += '<div class="pg">' + w.photos.map(function (p, i) {
+                return '<div class="pt' + (i === w.idx ? ' on' : '') + '"><button type="button" class="pt-b" data-pshow="' + i + '" aria-label="Show photo ' + (i + 1) + '" style="background-image:url(\'' + p.url + '\')"></button><button type="button" class="pt-x" data-prm="' + i + '" aria-label="Remove photo ' + (i + 1) + '">×</button></div>';
+              }).join('') + '</div><p class="hint">' + n + ' photo' + (n === 1 ? '' : 's') + ' · tap one to preview it</p>';
+            } else {
+              o += '<p class="hint">No photos yet. Add as many as you like.</p>';
+            }
+            o += sh('Slideshow');
+            o += '<div class="tg">' + chk('auto', 'Auto-change') + chk('shuffle', 'Shuffle') + chk('loop', 'Loop') + chk('showDots', 'Indicators') + '</div>';
+            o += rng('interval', 'Interval between photos', 2, 120, 1, 's').replace('<input', '<input' + (w.auto ? '' : ' disabled'));
+            o += opts('trans', 'Transition', [['fade', 'Fade'], ['slide', 'Slide'], ['zoom', 'Zoom'], ['none', 'None']]);
+          } else if (S.tab === 'style') {
+            o += sh('Size');
+            o += rng('width', 'Width', 120, 420, 1, 'px');
+            o += rng('height', 'Height', 120, 520, 1, 'px');
+            o += opts('fit', 'Photo fit', [['cover', 'Fill'], ['contain', 'Fit'], ['fill', 'Stretch']]);
+            o += sh('Shape');
+            o += rng('radius', 'Corner radius', 0, 120, 1, 'px');
+            o += rng('opacity', 'Opacity', 10, 100, 1, '%');
+            o += rng('pad', 'Frame padding', 0, 32, 1, 'px');
+            o += col('bg', 'Frame colour (used with padding)');
+            o += sh('Adjust');
+            o += rng('brightness', 'Brightness', 40, 160, 1, '%');
+            o += rng('gray', 'Grayscale', 0, 100, 1, '%');
+            o += sh('Border and shadow');
+            o += '<div class="tg">' + chk('border', 'Border') + chk('shadow', 'Drop shadow') + '</div>';
+            if (w.border) o += col('borderColor', 'Border colour');
+          } else {
+            o += sh('Tap on widget');
+            o += opts('tap', 'When tapped', [['next', 'Next photo'], ['prev', 'Previous photo'], ['pause', 'Pause / resume'], ['view', 'Full screen'], ['none', 'Nothing']]);
+            o += sh('Long press');
+            o += opts('lp', 'When long-pressed', [['menu', 'Show menu'], ['edit', 'Edit widget'], ['none', 'Nothing']]);
+            o += rng('lpTime', 'Long-press time', 300, 1500, 50, 'ms');
+            o += sh('Menu buttons');
+            o += '<div class="tg">' + chk('mEdit', 'Edit widget') + chk('mNext', 'Next photo') + chk('mPrev', 'Previous photo') + chk('mShuffle', 'Shuffle on / off') + chk('mPause', 'Pause / resume') + chk('mView', 'Full screen') + chk('mRemove', 'Remove this photo') + '</div>';
+          }
+          return o;
+        }
+
+        var h = kindsHTML();
         
-    h += '<div class="tabs" role="tablist">' + [['content', 'Content'], ['style', 'Style'], ['bg', 'Background']].map(function (t) {
+    h += '<div class="tabs" role="tablist">' + (w.type === 'photo' ? [['content', 'Photos'], ['style', 'Style'], ['bg', 'Actions']] : [['content', 'Content'], ['style', 'Style'], ['bg', 'Background']]).map(function (t) {
       return '<button class="tab" role="tab" data-tab="' + t[0] + '" aria-selected="' + (S.tab === t[0]) + '">' + t[1] + '</button>';
     }).join('') + '</div>';
 
     var c = '';
-    if (S.tab === 'content') {
+        if (w.type === 'photo') { c = photoPanel(); }
+        else if (S.tab === 'content') {
       if (!cnt) {
         c += '<div class="f"><label for="c-text">Text</label><textarea id="c-text" data-k="text" rows="3">' + esc(w.text) + '</textarea></div>';
       } else {
@@ -774,6 +944,22 @@ html:has(body.side-open) { overflow: hidden !important; }
     function endDrag() { if (S.drag) { S.drag = null; renderPanel(); } }
     document.addEventListener('pointerup', endDrag);
     document.addEventListener('pointercancel', endDrag);
+        var lpT = null, lpX = 0, lpY = 0;
+        function lpStop() { if (lpT) { clearTimeout(lpT); lpT = null; } }
+        document.addEventListener('pointerdown', function (e) {
+          S.lp = false; lpStop();
+          var el = e.target.closest('.w[data-type="photo"]'), w = cur();
+          if (!el || !w || w.type !== 'photo' || w.lp === 'none') return;
+          lpX = e.clientX; lpY = e.clientY;
+          lpT = setTimeout(function () {
+            lpT = null; S.lp = true;
+            if (w.lp === 'edit') photoAct(w, 'edit'); else openPM(w, el);
+          }, w.lpTime);
+        });
+        document.addEventListener('pointermove', function (e) { if (lpT && Math.abs(e.clientX - lpX) + Math.abs(e.clientY - lpY) > 12) lpStop(); });
+        document.addEventListener('pointerup', lpStop);
+        document.addEventListener('pointercancel', lpStop);
+        document.addEventListener('contextmenu', function (e) { if (e.target.closest('.w[data-type="photo"]')) e.preventDefault(); });
   panel.addEventListener('input', function (e) {
     var t = e.target;
         if (t.dataset && t.dataset.hex) { hexInput(t); return; }
@@ -785,7 +971,9 @@ html:has(body.side-open) { overflow: hidden !important; }
     renderWidgets();
   });
   panel.addEventListener('change', function (e) {
-    var t = e.target; if (!t.dataset || !t.dataset.k) return;
+    var t = e.target;
+        if (t.id === 'photo-file') { addPhotos(t.files); t.value = ''; return; }
+        if (!t.dataset || !t.dataset.k) return;
     if (t.type === 'color') { renderPanel('#' + t.id); return; }
         if (t.type === 'checkbox' || t.tagName === 'SELECT') {
       setVal(t); renderWidgets(); renderPanel('#' + t.id);
@@ -804,15 +992,19 @@ html:has(body.side-open) { overflow: hidden !important; }
   }
 
   document.addEventListener('click', function (e) {
+        if (S.lp) { S.lp = false; return; }
+        if (e.target.closest('.pv')) { closePV(); return; }
+        if (!e.target.closest('.pm')) closePM();
       if (S.dd && !e.target.closest('.dd')) { S.dd = false; renderPanel(); }
       var wEl = e.target.closest('.w');
-    if (wEl && !e.target.closest('button')) { select(Number(wEl.dataset.id)); return; }
+    if (wEl && !e.target.closest('button')) { var pw0 = cur(); if (wEl.dataset.type === 'photo' && pw0 && pw0.type === 'photo') photoAct(pw0, pw0.tap); else select(Number(wEl.dataset.id)); return; }
     var b = e.target.closest('button'); if (!b) return;
     var w = cur();
     var attr = b.getAttributeNames().filter(function (n) { return n.indexOf('data-') === 0; })[0];
     var q = attr ? '[' + attr + '="' + b.getAttribute(attr) + '"]' : null;
 
-    if (b.dataset.side) { toggleSide(b.dataset.side === 'open'); return; }
+    if (b.dataset.pm) { var pw1 = cur(); closePM(); if (pw1 && pw1.type === 'photo') photoAct(pw1, b.dataset.pm); return; }
+            if (b.dataset.side) { toggleSide(b.dataset.side === 'open'); return; }
         if (b.dataset.newtoggle) { sideNew = !sideNew; renderSide(); return; }
         if (b.dataset.pick) { S.sel = Number(b.dataset.pick); S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(); toggleSide(false); return; }
         if (b.dataset.del) {
@@ -828,7 +1020,7 @@ html:has(body.side-open) { overflow: hidden !important; }
         if (b.dataset.tab) { S.tab = b.dataset.tab; S.dd = false; S.cp = null; S.dt = false; renderPanel(q); return; }
     if (b.dataset.add) {
       if (S.w.length >= 30) return;
-      var nw = b.dataset.add === 'text' ? mkText() : mkCount();
+      var nw = b.dataset.add === 'text' ? mkText() : b.dataset.add === 'photo' ? mkPhoto() : mkCount();
       S.w.push(nw); S.sel = nw.id; S.tab = 'content'; S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(); toggleSide(false); return;
     }
     if (b.hasAttribute('data-remove')) {
@@ -837,7 +1029,17 @@ html:has(body.side-open) { overflow: hidden !important; }
       renderWidgets(); renderPanel(); return;
     }
     if (!w) return;
-        if (b.dataset.cp) { var ck = b.dataset.cp; S.cp = S.cp === ck ? null : ck; if (S.cp) S.hsv = hex2hsv(w[ck]); renderPanel(q); return; }
+        if (b.dataset.padd) { var pf = $('#photo-file'); if (pf) pf.click(); return; }
+                if (b.dataset.pclear) { (w.photos || []).forEach(function (p) { try { URL.revokeObjectURL(p.url); } catch (err) { } }); w.photos = []; w.idx = 0; renderWidgets(); renderPanel(); return; }
+                if (b.dataset.pshow) { w.idx = Number(b.dataset.pshow); w.last = Date.now(); renderWidgets(); renderPanel(); return; }
+                if (b.dataset.prm) {
+                  var pi = Number(b.dataset.prm), gp = w.photos.splice(pi, 1)[0];
+                  if (gp) { try { URL.revokeObjectURL(gp.url); } catch (err) { } }
+                  if (pi < w.idx) w.idx--;
+                  w.idx = Math.max(0, Math.min(w.idx, w.photos.length - 1));
+                  renderWidgets(); renderPanel(); return;
+                }
+                if (b.dataset.cp) { var ck = b.dataset.cp; S.cp = S.cp === ck ? null : ck; if (S.cp) S.hsv = hex2hsv(w[ck]); renderPanel(q); return; }
                 if (b.dataset.dt) { S.dt = !S.dt; S.dtv = null; renderPanel('#c-target'); return; }
                 if (b.dataset.dtm) { var tt = parseT(w.target), vv = S.dtv || { y: tt.y, m: tt.m }, nm2 = vv.m + Number(b.dataset.dtm); S.dtv = { y: vv.y + Math.floor(nm2 / 12), m: ((nm2 % 12) + 12) % 12 }; renderPanel(q); return; }
                 if (b.dataset.dtd) { var t1 = parseT(w.target), v1 = S.dtv || { y: t1.y, m: t1.m }; t1.y = v1.y; t1.m = v1.m; t1.d = Number(b.dataset.dtd); w.target = fmtT(t1); renderWidgets(); renderPanel(q); return; }
@@ -859,7 +1061,8 @@ html:has(body.side-open) { overflow: hidden !important; }
     }
   });
   document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && document.body.classList.contains('side-open')) { toggleSide(false); return; }
+        if (e.key === 'Escape' && ($('.pv') || $('.pm'))) { closePV(); closePM(); return; }
+                if (e.key === 'Escape' && document.body.classList.contains('side-open')) { toggleSide(false); return; }
       if (e.key === 'Escape' && (S.dd || S.cp || S.dt)) { S.dd = false; S.cp = null; S.dt = false; renderPanel(); return; }
       if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('w')) {
       e.preventDefault(); select(Number(e.target.dataset.id));
@@ -879,7 +1082,13 @@ html:has(body.side-open) { overflow: hidden !important; }
     tickClock();
     setInterval(function () {
       tickClock();
-      document.querySelectorAll('.w[data-type="count"]').forEach(function (el) {
+      document.querySelectorAll('.w[data-type="photo"]').forEach(function (el) {
+              var pw = S.w.filter(function (x) { return x.id === Number(el.dataset.id); })[0];
+              if (pw && pw.auto && !pw.paused && pw.photos.length > 1 && !$('.pv') && !$('.pm') && Date.now() - pw.last >= pw.interval * 1000) {
+                if (photoStep(pw, 1)) fillPhoto(el, pw, true); else pw.last = Date.now();
+              }
+            });
+            document.querySelectorAll('.w[data-type="count"]').forEach(function (el) {
       var w = S.w.filter(function (x) { return x.id === Number(el.dataset.id); })[0];
       if (w) fill(el, w);
     });
