@@ -347,10 +347,6 @@ html:has(body.side-open) { overflow: hidden !important; }
 @keyframes pwz { from { transform: scale(1.12); opacity: 0; } to { transform: none; opacity: 1; } }
 .pe { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-align: center; padding: 12px; font-size: 13px; color: rgba(255, 255, 255, 0.85); }
 .pe b { font-weight: 600; font-size: 14px; }
-.pd { position: absolute; left: 0; right: 0; bottom: 10px; display: flex; justify-content: center; gap: 5px; pointer-events: none; }
-.pd i { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.5); }
-.pd i.on { background: #fff; }
-.pc { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.45); color: #fff; }
 .pp { position: absolute; top: 10px; left: 10px; font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(0, 0, 0, 0.5); color: #fff; pointer-events: none; }
 .pg { display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); gap: 8px; max-height: 280px; overflow-y: auto; }
 .pt { position: relative; aspect-ratio: 1; border-radius: 12px; overflow: hidden; }
@@ -571,7 +567,7 @@ html:has(body.side-open) { overflow: hidden !important; }
   /* ---------- photo widgets ---------- */
     function mkPhoto() {
       return { id: nid++, type: 'photo', label: 'Photos', photos: [], idx: 0, last: Date.now(), paused: false,
-        auto: true, interval: 5, shuffle: false, loop: true, showDots: true, trans: 'fade',
+        auto: true, interval: 5, shuffle: false, loop: true, trans: 'fade',
         width: 260, height: 260, fit: 'cover', radius: 28, opacity: 100, pad: 0, bg: '#ffffff', border: false, borderColor: '#ffffff', shadow: true,
         brightness: 100, gray: 0, tap: 'next', lp: 'menu', lpTime: 550,
         mEdit: true, mNext: true, mPrev: true, mShuffle: true, mPause: true, mView: true, mRemove: true };
@@ -590,10 +586,6 @@ html:has(body.side-open) { overflow: hidden !important; }
         h = '<div class="pe"><b>No photos yet</b><span>Add photos in the editor</span></div>';
       } else {
         h = '<img class="pi' + (anim && w.trans !== 'none' ? ' a-' + w.trans : '') + '" src="' + p.url + '" alt="" draggable="false" style="object-fit:' + w.fit + ';border-radius:' + r + 'px;filter:brightness(' + w.brightness + '%) grayscale(' + w.gray + '%)">';
-        if (w.showDots && n > 1) {
-          if (n <= 12) h += '<div class="pd">' + w.photos.map(function (x, i) { return '<i' + (i === w.idx ? ' class="on"' : '') + '></i>'; }).join('') + '</div>';
-          else h += '<div class="pd"><span class="pc">' + (w.idx + 1) + ' / ' + n + '</span></div>';
-        }
         if (w.paused && w.auto && n > 1) h += '<span class="pp">Paused</span>';
       }
       el.innerHTML = h;
@@ -847,7 +839,7 @@ html:has(body.side-open) { overflow: hidden !important; }
               o += '<p class="hint">No photos yet. Add as many as you like.</p>';
             }
             o += sh('Slideshow');
-            o += '<div class="tg">' + chk('auto', 'Auto-change') + chk('shuffle', 'Shuffle') + chk('loop', 'Loop') + chk('showDots', 'Indicators') + '</div>';
+            o += '<div class="tg">' + chk('auto', 'Auto-change') + chk('shuffle', 'Shuffle') + chk('loop', 'Loop') + '</div>';
             o += rng('interval', 'Interval between photos', 2, 120, 1, 's').replace('<input', '<input' + (w.auto ? '' : ' disabled'));
             o += opts('trans', 'Transition', [['fade', 'Fade'], ['slide', 'Slide'], ['zoom', 'Zoom'], ['none', 'None']]);
           } else if (S.tab === 'style') {
