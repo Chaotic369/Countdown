@@ -166,6 +166,103 @@ input:disabled, select:disabled { opacity: 0.4; }
 .danger:hover:not(:disabled) { color: var(--fg); background: var(--surface2); }
 .danger:disabled { opacity: 0.4; cursor: default; }
 @media (prefers-reduced-motion: reduce) { .knob, .knob::after { transition: none; } }
+
+/* ---------- v2 polish: layout, buttons, custom pickers ---------- */
+:root { --shadow: 0 1px 2px rgba(20, 16, 8, 0.06), 0 14px 34px -14px rgba(20, 16, 8, 0.22); }
+:root[data-ui="dark"] { --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 42px -16px rgba(0, 0, 0, 0.75); }
+body { -webkit-font-smoothing: antialiased; }
+.brand { font-size: 18px; }
+.mark { width: 22px; height: 22px; border-radius: 7px; }
+.mark::after { inset: 6px; border-radius: 3px; }
+.themes { padding: 4px; border-radius: 14px; box-shadow: var(--shadow); }
+.th { padding: 8px 14px; border-radius: 10px; font-weight: 500; transition: background 0.15s, color 0.15s; }
+.th[aria-checked="true"] { background: var(--accent); color: var(--accent-fg); }
+
+.stage { border: 0; border-radius: 28px; box-shadow: var(--shadow); }
+.stage-bar { gap: 8px; }
+.stage-bar .chip { display: inline-flex; align-items: center; }
+.wp { width: 16px; height: 16px; border-radius: 5px; margin-right: 7px; display: inline-block; border: 1px solid rgba(0, 0, 0, 0.15); }
+.wp-phone { background: radial-gradient(circle at 20% 20%, #3a5ba9, #12162a 70%); }
+.wp-moss { background: radial-gradient(circle at 20% 20%, #6f8f66, #16241b 80%); }
+.wp-check { background: repeating-conic-gradient(#cfcfcf 0% 25%, #f5f5f5 0% 50%) 50% / 8px 8px; }
+
+.panel { border-radius: 24px; padding: 20px; gap: 18px; box-shadow: var(--shadow); }
+.kinds { gap: 10px; }
+.kind { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "i t" "i s"; column-gap: 12px; row-gap: 1px; align-items: center; padding: 12px; border-radius: 18px; border-color: transparent; background: var(--surface2); transition: background 0.15s, color 0.15s; }
+.ki { grid-area: i; width: 42px; height: 42px; border-radius: 13px; display: grid; place-items: center; background: var(--surface); font-weight: 600; font-size: 16px; font-family: var(--mono); }
+.kt { grid-area: t; }
+.ks { grid-area: s; line-height: 1.25; }
+.kind[aria-pressed="true"] .ki { background: color-mix(in srgb, var(--accent-fg) 16%, transparent); }
+
+.tabs { border: 0; background: var(--surface2); padding: 4px; gap: 4px; border-radius: 14px; }
+.tab { flex: 1; border: 0; margin: 0; padding: 9px 8px; border-radius: 10px; font-weight: 500; transition: background 0.15s, color 0.15s; }
+.tab[aria-selected="true"] { background: var(--surface); color: var(--fg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14); }
+
+.ctl { gap: 14px; }
+.sh { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.sh::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+.ctl > .sh:first-child { margin-top: 0; }
+
+select, input[type="text"], textarea { border: 1px solid transparent; border-radius: 12px; padding: 11px 13px; transition: border-color 0.15s, background 0.15s; }
+input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--accent); background: var(--surface); }
+
+.chip, .ghost { background: var(--surface); border: 1px solid var(--line); padding: 8px 13px; border-radius: 999px; font-size: 13px; font-weight: 500; transition: background 0.15s, border-color 0.15s, transform 0.1s; }
+.chip:hover, .ghost:hover { background: var(--surface2); }
+.chip[aria-pressed="true"]:hover { background: var(--accent); }
+.chip:active, .ghost:active, .kind:active, .cs:active, .dc:active, .ib:active, .cp-c:active { transform: scale(0.97); }
+.row.units { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.row.units .chip { display: flex; align-items: center; justify-content: center; gap: 6px; border-radius: 12px; }
+.row.units .chip[aria-pressed="true"]::before { content: "✓"; font-size: 11px; }
+
+.seg { background: var(--surface2); border: 0; padding: 4px; gap: 4px; border-radius: 14px; overflow: visible; }
+.seg button { border-radius: 10px; font-weight: 500; }
+.seg button + button { border-left: 0; }
+
+.tg { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.sw { width: 100%; justify-content: space-between; padding: 11px 13px; background: var(--surface2); border-radius: 12px; font-size: 14px; }
+.sw .knob { order: 2; }
+.sw > span:last-child { order: 1; }
+
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 24px; background: transparent; cursor: pointer; --p: 50%; }
+input[type="range"]::-webkit-slider-runnable-track { height: 6px; border-radius: 999px; background: linear-gradient(90deg, var(--accent) var(--p), var(--line) var(--p)); }
+input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -7px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); }
+input[type="range"]::-moz-range-track { height: 6px; border-radius: 999px; background: var(--line); }
+input[type="range"]::-moz-range-progress { height: 6px; border-radius: 999px; background: var(--accent); }
+input[type="range"]::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25); }
+input[type="range"]:disabled { opacity: 0.4; cursor: default; }
+
+.cs { width: 32px; height: 32px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12); }
+.cp-c { background: var(--surface); font-weight: 500; }
+.cp-c[aria-expanded="true"] { background: var(--surface2); }
+.cp-c:disabled { opacity: 0.4; pointer-events: none; }
+.pick { display: flex; flex-direction: column; gap: 12px; padding: 12px; background: var(--surface2); border-radius: 18px; }
+.sv { position: relative; height: 150px; border-radius: 12px; touch-action: none; cursor: crosshair; background-image: linear-gradient(to top, #000, rgba(0, 0, 0, 0)), linear-gradient(to right, #fff, rgba(255, 255, 255, 0)); }
+.hue { position: relative; height: 14px; border-radius: 999px; touch-action: none; cursor: pointer; background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00); }
+.sv-h, .hue-h { position: absolute; width: 20px; height: 20px; margin: -10px 0 0 -10px; border-radius: 50%; border: 3px solid #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.35); pointer-events: none; }
+.hue-h { top: 50%; }
+.hexrow { display: flex; align-items: center; gap: 8px; background: var(--surface); border-radius: 12px; padding: 2px 12px; }
+.hexrow span { font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; color: var(--muted); }
+.hexrow b { color: var(--muted); font-weight: 500; }
+.hexrow .hex { width: 100%; border: 0; background: transparent; padding: 9px 0; font-family: var(--mono); outline: none; }
+
+.dt-t { width: 100%; display: flex; align-items: center; gap: 10px; text-align: left; background: var(--surface2); border: 1px solid transparent; border-radius: 12px; padding: 11px 13px; font-weight: 500; }
+.dt-t[aria-expanded="true"] { border-color: var(--accent); }
+.dt-p { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; padding: 14px; background: var(--surface2); border-radius: 18px; }
+.dt-h { display: flex; align-items: center; justify-content: space-between; }
+.ib { min-width: 34px; height: 34px; border: 0; border-radius: 10px; background: var(--surface); font-size: 18px; line-height: 1; display: grid; place-items: center; transition: background 0.15s, transform 0.1s; }
+.ib:hover { background: var(--bg); }
+.ib.sm { padding: 0 9px; font-size: 12px; font-weight: 500; }
+.dt-w, .dt-g { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; }
+.dt-w span { font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+.dc { aspect-ratio: 1; border: 0; background: transparent; border-radius: 10px; font-size: 14px; }
+.dc:hover { background: var(--surface); }
+.dc.today { box-shadow: inset 0 0 0 1px var(--muted); }
+.dc[aria-pressed="true"] { background: var(--accent); color: var(--accent-fg); font-weight: 600; }
+.dt-time { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 12px; }
+.dt-time .st { display: flex; align-items: center; gap: 6px; }
+.dt-time b { min-width: 2ch; text-align: center; font-family: var(--mono); font-size: 20px; font-variant-numeric: tabular-nums; }
+.dt-time .colon { font-family: var(--mono); font-size: 20px; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .th, .chip, .ghost, .kind, .tab, .ib { transition: none; } }
 </style>
 
 <div class="app">
@@ -186,9 +283,9 @@ input:disabled, select:disabled { opacity: 0.4; }
             </div>
       <div class="stage-bar" id="walls">
         <span class="lb">Wallpaper</span>
-        <button class="chip" data-wall="phone" aria-pressed="true">Default</button>
-                <button class="chip" data-wall="moss" aria-pressed="false">Moss</button>
-        <button class="chip" data-wall="check" aria-pressed="false">Transparency grid</button>
+        <button class="chip" data-wall="phone" aria-pressed="true"><i class="wp wp-phone"></i>Default</button>
+                <button class="chip" data-wall="moss" aria-pressed="false"><i class="wp wp-moss"></i>Moss</button>
+        <button class="chip" data-wall="check" aria-pressed="false"><i class="wp wp-check"></i>Transparent</button>
       </div>
       
     </section>
@@ -218,11 +315,11 @@ input:disabled, select:disabled { opacity: 0.4; }
   };
   var TEXTF = ['Instrument Sans', 'Fraunces', 'Playfair Display', 'Lora', 'Caveat', 'Bebas Neue', 'Space Mono'];
   var DIGITAL = ['Orbitron', 'VT323', 'Share Tech Mono', 'Audiowide', 'Oxanium'];
-  var UNITS = [['years', 'Years'], ['months', 'Months'], ['weeks', 'Weeks'], ['days', 'Days'], ['hours', 'Hours'], ['minutes', 'Minutes'], ['seconds', 'Seconds'], ['milliseconds', 'Milliseconds']];
-  var MS = { weeks: 6048e5, days: 864e5, hours: 36e5, minutes: 6e4, seconds: 1e3, milliseconds: 1 };
+  var UNITS = [['years', 'Years'], ['months', 'Months'], ['weeks', 'Weeks'], ['days', 'Days'], ['hours', 'Hours'], ['minutes', 'Minutes'], ['seconds', 'Seconds']];
+  var MS = { weeks: 6048e5, days: 864e5, hours: 36e5, minutes: 6e4, seconds: 1e3 };
   var PRESETS = [
     ['Days', 'days'], ['Weeks + days', 'weeks,days'], ['Y · M · W · D', 'years,months,weeks,days'],
-    ['D · H · M · S', 'days,hours,minutes,seconds'], ['Seconds', 'seconds'], ['Sec + ms', 'seconds,milliseconds'], ['Everything', 'years,months,weeks,days,hours,minutes,seconds,milliseconds']
+    ['D · H · M · S', 'days,hours,minutes,seconds'], ['Seconds', 'seconds'], ['Everything', 'years,months,weeks,days,hours,minutes,seconds']
   ];
   var UI_THEMES = ['cream', 'dark'];
 
@@ -238,7 +335,7 @@ input:disabled, select:disabled { opacity: 0.4; }
       bgOn: true, bg: '#0b0b0b', bgOpacity: 55, blur: 10, radius: 22, pad: 20, border: false, borderColor: '#ffb000' };
   }
 
-  var S = { w: [mkText(), mkCount()], sel: null, wall: 'phone', tab: 'content', dd: false };
+  var S = { w: [mkText(), mkCount()], sel: null, wall: 'phone', tab: 'content', dd: false, cp: null, hsv: { h: 0, s: 0, v: 0 }, dt: false, dtv: null, drag: null };
   S.sel = S.w[1].id;
 
   function cur() { for (var i = 0; i < S.w.length; i++) if (S.w[i].id === S.sel) return S.w[i]; return null; }
@@ -253,14 +350,14 @@ input:disabled, select:disabled { opacity: 0.4; }
     r.setDate(Math.min(day, last)); return r;
   }
   function breakdown(w) {
-    var out = { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+    var out = { years: 0, months: 0, weeks: 0, days: 0, hours: 0, minutes: 0, seconds: 0 };
     var t = new Date(w.target), now = new Date();
     if (isNaN(t.getTime()) || t <= now) return out;
     var c = now;
     if (w.units.years) { var y = 0; while (y < 200 && addM(c, 12 * (y + 1)) <= t) y++; out.years = y; c = addM(c, 12 * y); }
     if (w.units.months) { var m = 0; while (m < 2400 && addM(c, m + 1) <= t) m++; out.months = m; c = addM(c, m); }
     var ms = t - c;
-    ['weeks', 'days', 'hours', 'minutes', 'seconds', 'milliseconds'].forEach(function (k) {
+    ['weeks', 'days', 'hours', 'minutes', 'seconds'].forEach(function (k) {
       if (w.units[k]) { var v = Math.floor(ms / MS[k]); out[k] = v; ms -= v * MS[k]; }
     });
     return out;
@@ -302,10 +399,10 @@ input:disabled, select:disabled { opacity: 0.4; }
     var h = '';
     if (w.showTitle && w.label) h += '<div class="cl" style="font-size:' + Math.max(11, Math.round(sz * 0.32)) + 'px;font-family:' + (seg ? 'var(--mono)' : fam) + ';font-style:' + (w.italic ? 'italic' : 'normal') + ';color:' + w.color + '">' + esc(w.label) + '</div>';
     var parts = act.map(function (u) {
-      var v = String(p[u[0]]); while (v.length < (u[0] === 'milliseconds' ? 3 : 2)) v = '0' + v;
+      var v = String(p[u[0]]); if (v.length < 2) v = '0' + v;
       var num = seg ? '<div class="num">' + v.split('').map(function (c) { return dg(c, sz); }).join('') + '</div>'
                     : '<div class="num" style="font-size:' + sz + 'px">' + v + '</div>';
-      var lab = w.showLabels ? '<div class="lab" style="font-size:' + labSz + 'px;font-style:' + (w.italic ? 'italic' : 'normal') + '">' + (u[0] === 'milliseconds' ? 'MS' : u[1].toUpperCase()) + '</div>' : '';
+      var lab = w.showLabels ? '<div class="lab" style="font-size:' + labSz + 'px;font-style:' + (w.italic ? 'italic' : 'normal') + '">' + u[1].toUpperCase() + '</div>' : '';
       return '<div class="u">' + num + lab + '</div>';
     });
     var sep = w.seps ? '<div class="sep" style="font-size:' + sz + 'px">' + (seg ? colon(sz) : ':') + '</div>' : '';
@@ -331,10 +428,77 @@ input:disabled, select:disabled { opacity: 0.4; }
   }
 
   /* ---------- panel ---------- */
-  function kindsHTML() {
-      var info = { text: ['Text', 'Words only'], count: ['Countdown', 'Live timer, optional title'] };
+  /* ---------- colour + date helpers ---------- */
+    function hsv2hex(h, s, v) {
+      var f = function (n) {
+        var k = (n + h / 60) % 6, x = v - v * s * Math.max(0, Math.min(k, 4 - k, 1));
+        return ('0' + Math.round(x * 255).toString(16)).slice(-2);
+      };
+      return '#' + f(5) + f(3) + f(1);
+    }
+    function hex2hsv(hex) {
+      var n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255) / 255, g = (n >> 8 & 255) / 255, b = (n & 255) / 255;
+      var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn, h = 0;
+      if (d) { h = mx === r ? ((g - b) / d + 6) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; h *= 60; }
+      return { h: h, s: mx ? d / mx : 0, v: mx };
+    }
+    function syncPick() {
+      var w = cur(), k = S.cp; if (!w || !k) return;
+      var root = panel.querySelector('.pick'); if (!root) return;
+      var hs = S.hsv, sv = root.querySelector('.sv'), svh = root.querySelector('.sv-h'), hh = root.querySelector('.hue-h'), hx = root.querySelector('.hex');
+      sv.style.backgroundColor = 'hsl(' + hs.h + ',100%,50%)';
+      svh.style.left = (hs.s * 100) + '%'; svh.style.top = ((1 - hs.v) * 100) + '%';
+      hh.style.left = (hs.h / 360 * 100) + '%';
+      if (document.activeElement !== hx) hx.value = w[k].slice(1);
+      var o = document.getElementById('o-' + k); if (o) o.textContent = w[k];
+      var dot = document.getElementById('dot-' + k); if (dot) dot.style.background = w[k];
+    }
+    function hexInput(t) {
+      var w = cur(), k = t.dataset.hex, v = t.value.replace(/[^0-9a-f]/gi, '').toLowerCase();
+      if (t.value !== v) t.value = v;
+      if (!w || v.length !== 6) return;
+      w[k] = '#' + v; S.hsv = hex2hsv(w[k]); renderWidgets(); syncPick();
+    }
+    function dragMove(e) {
+      var el = S.drag, w = cur(); if (!el || !w || !S.cp) return;
+      var r = el.getBoundingClientRect();
+      var x = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)), y = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
+      if (el.dataset.pk === 'sv') { S.hsv.s = x; S.hsv.v = 1 - y; } else { S.hsv.h = x * 359.99; }
+      w[S.cp] = hsv2hex(S.hsv.h, S.hsv.s, S.hsv.v);
+      renderWidgets(); syncPick();
+    }
+    var MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var p2 = function (n) { return ('0' + n).slice(-2); };
+    function parseT(s) {
+      var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})/.exec(s || ''), n = new Date();
+      if (!m) return { y: n.getFullYear(), m: n.getMonth(), d: n.getDate(), hh: 0, mm: 0 };
+      return { y: +m[1], m: +m[2] - 1, d: +m[3], hh: +m[4], mm: +m[5] };
+    }
+    function fmtT(t) { return t.y + '-' + p2(t.m + 1) + '-' + p2(t.d) + 'T' + p2(t.hh) + ':' + p2(t.mm); }
+    function dtHTML(w) {
+      var t = parseT(w.target), v = S.dtv || { y: t.y, m: t.m }, now = new Date();
+      var ico = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 6.5h12M5.5 1.8v2.6M10.5 1.8v2.6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>';
+      var out = '<div class="f"><button type="button" class="dt-t" id="c-target" data-dt="toggle" aria-expanded="' + !!S.dt + '">' + ico + '<span>' + t.d + ' ' + MON[t.m].slice(0, 3) + ' ' + t.y + ', ' + p2(t.hh) + ':' + p2(t.mm) + '</span></button>';
+      if (S.dt) {
+        var first = (new Date(v.y, v.m, 1).getDay() + 6) % 7, days = new Date(v.y, v.m + 1, 0).getDate(), cells = '', i, d;
+        for (i = 0; i < first; i++) cells += '<i></i>';
+        for (d = 1; d <= days; d++) {
+          var on = t.y === v.y && t.m === v.m && t.d === d, td = now.getFullYear() === v.y && now.getMonth() === v.m && now.getDate() === d;
+          cells += '<button type="button" class="dc' + (td ? ' today' : '') + '" data-dtd="' + d + '" aria-pressed="' + on + '">' + d + '</button>';
+        }
+        out += '<div class="dt-p"><div class="dt-h"><button type="button" class="ib" data-dtm="-1" aria-label="Previous month">‹</button><b>' + MON[v.m] + ' ' + v.y + '</b><button type="button" class="ib" data-dtm="1" aria-label="Next month">›</button></div>' +
+          '<div class="dt-w"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>' +
+          '<div class="dt-g">' + cells + '</div>' +
+          '<div class="dt-time"><div class="st"><button type="button" class="ib" data-dtt="h:-1" aria-label="Hour down">−</button><b>' + p2(t.hh) + '</b><button type="button" class="ib" data-dtt="h:1" aria-label="Hour up">+</button></div><span class="colon">:</span>' +
+          '<div class="st"><button type="button" class="ib sm" data-dtt="m:-5" aria-label="Five minutes down">−5</button><button type="button" class="ib" data-dtt="m:-1" aria-label="Minute down">−</button><b>' + p2(t.mm) + '</b><button type="button" class="ib" data-dtt="m:1" aria-label="Minute up">+</button><button type="button" class="ib sm" data-dtt="m:5" aria-label="Five minutes up">+5</button></div></div>' +
+          '<div class="row">' + ['00:00', '09:00', '12:00', '18:00', '23:59'].map(function (q) { return '<button type="button" class="chip" data-dtq="' + q + '">' + q + '</button>'; }).join('') + '</div></div>';
+      }
+      return out + '</div>';
+    }
+    function kindsHTML() {
+      var info = { text: ['Text', 'Words only', 'Aa'], count: ['Countdown', 'Live timer, optional title', '88'] };
       return '<div class="kinds" role="group" aria-label="Widget type">' + S.w.map(function (x) {
-        return '<button class="kind" data-sel="' + x.id + '" aria-pressed="' + (x.id === S.sel) + '"><span class="kt">' + info[x.type][0] + '</span><span class="ks">' + info[x.type][1] + '</span></button>';
+        return '<button class="kind" data-sel="' + x.id + '" aria-pressed="' + (x.id === S.sel) + '"><span class="ki">' + info[x.type][2] + '</span><span class="kt">' + info[x.type][0] + '</span><span class="ks">' + info[x.type][1] + '</span></button>';
       }).join('') + '</div>';
     }
   function renderPanel(focusQ) {
@@ -344,12 +508,12 @@ input:disabled, select:disabled { opacity: 0.4; }
 
     function rng(k, l, min, max, step, u) {
       return '<div class="f"><div class="fh"><label for="c-' + k + '">' + l + '</label><output id="o-' + k + '">' + w[k] + u + '</output></div>' +
-        '<input type="range" id="c-' + k + '" data-k="' + k + '" data-u="' + u + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + w[k] + '"></div>';
+        '<input type="range" id="c-' + k + '" data-k="' + k + '" data-u="' + u + '" min="' + min + '" max="' + max + '" step="' + step + '" value="' + w[k] + '" style="--p:' + ((w[k] - min) / (max - min) * 100) + '%"></div>';
     }
     function chk(k, l, dis) {
       return '<label class="sw"><input type="checkbox" id="c-' + k + '" data-k="' + k + '"' + (w[k] ? ' checked' : '') + (dis ? ' disabled' : '') + '><span class="knob"></span><span>' + l + '</span></label>';
     }
-    function col(k, l, dis) {
+    function colOld(k, l, dis) {
           var presets = ['#ffffff', '#fff4dc', '#ffb000', '#ff6b4a', '#7ee787', '#5ec8ff', '#c9a7ff', '#111111'];
           var d = dis ? ' disabled' : '';
           return '<div class="f"><div class="fh"><label for="c-' + k + '">' + l + '</label><output id="o-' + k + '">' + w[k] + '</output></div>' +
@@ -358,7 +522,24 @@ input:disabled, select:disabled { opacity: 0.4; }
             }).join('') +
             '<label class="cp-c"><input type="color" id="c-' + k + '" data-k="' + k + '" value="' + w[k] + '"' + d + '><i class="cp-dot" style="background:' + w[k] + '"></i><span>Custom</span></label></div></div>';
         }
-    function fontSel() {
+    function sh(t) { return '<div class="sh">' + t + '</div>'; }
+        function col(k, l, dis) {
+          var presets = ['#ffffff', '#fff4dc', '#ffb000', '#ff6b4a', '#7ee787', '#5ec8ff', '#c9a7ff', '#111111'];
+          var d = dis ? ' disabled' : '', open = S.cp === k && !dis;
+          var out = '<div class="f"><div class="fh"><span class="lb">' + l + '</span><output id="o-' + k + '">' + w[k] + '</output></div><div class="cp">' +
+            presets.map(function (c) {
+              return '<button type="button" class="cs" data-color="' + k + ':' + c + '" aria-label="' + c + '" aria-pressed="' + (String(w[k]).toLowerCase() === c) + '" style="background:' + c + '"' + d + '></button>';
+            }).join('') +
+            '<button type="button" class="cp-c" data-cp="' + k + '" aria-expanded="' + open + '"' + d + '><i class="cp-dot" id="dot-' + k + '" style="background:' + w[k] + '"></i><span>Custom</span></button></div>';
+          if (open) {
+            var hs = S.hsv;
+            out += '<div class="pick"><div class="sv" data-pk="sv" style="background-color:hsl(' + hs.h + ',100%,50%)"><i class="sv-h" style="left:' + (hs.s * 100) + '%;top:' + ((1 - hs.v) * 100) + '%"></i></div>' +
+              '<div class="hue" data-pk="hue"><i class="hue-h" style="left:' + (hs.h / 360 * 100) + '%"></i></div>' +
+              '<label class="hexrow"><span>HEX</span><b>#</b><input type="text" class="hex" id="hex-' + k + '" data-hex="' + k + '" value="' + String(w[k]).slice(1) + '" maxlength="6" spellcheck="false" autocomplete="off" aria-label="Hex colour"></label></div>';
+          }
+          return out + '</div>';
+        }
+        function fontSel() {
           var groups = cnt ? [['Alarm clock', ['seg7'].concat(DIGITAL)], ['Text', TEXTF]] : [['Text', TEXTF], ['Digital', DIGITAL]];
           var fam = function (f) { return f === 'seg7' ? 'var(--mono)' : FONTS[f]; };
           var label = function (f) { return f === 'seg7' ? '7-segment display' : f; };
@@ -384,35 +565,46 @@ input:disabled, select:disabled { opacity: 0.4; }
       if (!cnt) {
         c += '<div class="f"><label for="c-text">Text</label><textarea id="c-text" data-k="text" rows="3">' + esc(w.text) + '</textarea></div>';
       } else {
-        c += chk('showTitle', 'Show title text above the countdown');
+        c += sh('Title');
+                c += chk('showTitle', 'Show title text above the countdown');
                 c += '<div class="f"><label for="c-label">Title text</label><input type="text" id="c-label" data-k="label" value="' + esc(w.label) + '"' + (w.showTitle ? '' : ' disabled') + '></div>';
-        c += '<div class="f"><label for="c-target">Counts down to</label><input type="datetime-local" id="c-target" data-k="target" value="' + esc(w.target) + '"></div>';
-        c += '<div class="f"><span class="lb">Quick mixes</span><div class="row">' + PRESETS.map(function (x) { return '<button class="ghost" data-preset="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '</div></div>';
-        c += '<div class="f"><span class="lb">Show these units</span><div class="row">' + UNITS.map(function (u) {
+        c += sh('Date and time');
+                c += dtHTML(w);
+        c += sh('Units');
+                c += '<div class="f"><span class="lb">Quick mixes</span><div class="row">' + PRESETS.map(function (x) { return '<button class="ghost" data-preset="' + x[1] + '">' + x[0] + '</button>'; }).join('') + '</div></div>';
+        c += '<div class="f"><span class="lb">Show these units</span><div class="row units">' + UNITS.map(function (u) {
           return '<button class="chip" data-unit="' + u[0] + '" aria-pressed="' + !!w.units[u[0]] + '">' + u[1] + '</button>';
         }).join('') + '</div></div>';
-        c += '<div class="tg">' + chk('showLabels', 'Unit labels') + chk('seps', 'Separators') + '</div>';
+        c += sh('Display');
+                c += '<div class="tg">' + chk('showLabels', 'Unit labels') + chk('seps', 'Separators') + '</div>';
       }
     } else if (S.tab === 'style') {
-      c += fontSel();
+      c += sh('Typeface');
+            c += fontSel();
       c += rng('size', cnt ? 'Digit size' : 'Text size', cnt ? 18 : 12, cnt ? 96 : 120, 1, 'px');
       if (!(cnt && w.font === 'seg7')) c += rng('weight', 'Weight', 300, 900, 100, '');
       if (!cnt) c += rng('spacing', 'Letter spacing', -2, 12, 0.5, 'px');
-      c += col('color', cnt ? 'Digit colour' : 'Text colour');
+      c += sh('Colour');
+            c += col('color', cnt ? 'Digit colour' : 'Text colour');
       if (!cnt) {
-        c += '<div class="f"><span class="lb">Align</span><div class="seg" role="group" aria-label="Text align">' + ['left', 'center', 'right'].map(function (a) {
+        c += sh('Layout');
+                c += '<div class="f"><span class="lb">Align</span><div class="seg" role="group" aria-label="Text align">' + ['left', 'center', 'right'].map(function (a) {
           return '<button data-set="align:' + a + '" aria-pressed="' + (w.align === a) + '">' + a.charAt(0).toUpperCase() + a.slice(1) + '</button>';
         }).join('') + '</div></div>';
       }
       c += '<div class="tg">' + chk('italic', 'Italic') + '</div>';
     } else {
-      c += chk('bgOn', 'Show background (turn off for fully transparent)');
-      c += col('bg', 'Background colour', !w.bgOn);
+      c += sh('Card');
+            c += chk('bgOn', 'Show card behind the widget');
+      c += sh('Fill');
+            c += col('bg', 'Card colour', !w.bgOn);
       c += rng('bgOpacity', 'Opacity', 0, 100, 1, '%').replace('<input', '<input' + (w.bgOn ? '' : ' disabled'));
       c += rng('blur', 'Frosted blur', 0, 30, 1, 'px').replace('<input', '<input' + (w.bgOn ? '' : ' disabled'));
-      c += rng('radius', 'Corner radius', 0, 48, 1, 'px');
+      c += sh('Shape');
+            c += rng('radius', 'Corner radius', 0, 48, 1, 'px');
       c += rng('pad', 'Padding', 6, 48, 1, 'px');
-      c += chk('border', 'Border');
+      c += sh('Border');
+            c += chk('border', 'Border');
       if (w.border) c += col('borderColor', 'Border colour');
     }
     h += '<div class="ctl">' + c + '</div>';
@@ -430,9 +622,22 @@ input:disabled, select:disabled { opacity: 0.4; }
     w[k] = v;
   }
   var panel = $('#panel');
+    panel.addEventListener('pointerdown', function (e) {
+      var el = e.target.closest('[data-pk]'); if (!el) return;
+      e.preventDefault(); S.drag = el;
+      try { el.setPointerCapture(e.pointerId); } catch (err) { }
+      dragMove(e);
+    });
+    document.addEventListener('pointermove', function (e) { if (S.drag) dragMove(e); });
+    function endDrag() { if (S.drag) { S.drag = null; renderPanel(); } }
+    document.addEventListener('pointerup', endDrag);
+    document.addEventListener('pointercancel', endDrag);
   panel.addEventListener('input', function (e) {
-    var t = e.target; if (!t.dataset || !t.dataset.k || t.type === 'checkbox' || t.tagName === 'SELECT') return;
-    setVal(t);
+    var t = e.target;
+        if (t.dataset && t.dataset.hex) { hexInput(t); return; }
+        if (!t.dataset || !t.dataset.k || t.type === 'checkbox' || t.tagName === 'SELECT') return;
+        if (t.type === 'range') t.style.setProperty('--p', ((t.value - t.min) / (t.max - t.min) * 100) + '%');
+        setVal(t);
     var o = document.getElementById('o-' + t.dataset.k);
     if (o) o.textContent = t.value + (t.dataset.u || '');
     renderWidgets();
@@ -467,8 +672,8 @@ input:disabled, select:disabled { opacity: 0.4; }
 
     if (b.dataset.ui) { setUI(b.dataset.ui); return; }
     if (b.dataset.wall) { S.wall = b.dataset.wall; applyWall(); return; }
-    if (b.dataset.sel) { S.sel = Number(b.dataset.sel); S.dd = false; renderWidgets(); renderPanel(q); return; }
-        if (b.dataset.tab) { S.tab = b.dataset.tab; S.dd = false; renderPanel(q); return; }
+    if (b.dataset.sel) { S.sel = Number(b.dataset.sel); S.dd = false; S.cp = null; S.dt = false; renderWidgets(); renderPanel(q); return; }
+        if (b.dataset.tab) { S.tab = b.dataset.tab; S.dd = false; S.cp = null; S.dt = false; renderPanel(q); return; }
     if (b.dataset.add) {
       if (S.w.length >= 6) return;
       var nw = b.dataset.add === 'text' ? mkText() : mkCount();
@@ -480,9 +685,15 @@ input:disabled, select:disabled { opacity: 0.4; }
       renderWidgets(); renderPanel(); return;
     }
     if (!w) return;
-        if (b.dataset.dd) { S.dd = !S.dd; renderPanel('#c-font'); return; }
+        if (b.dataset.cp) { var ck = b.dataset.cp; S.cp = S.cp === ck ? null : ck; if (S.cp) S.hsv = hex2hsv(w[ck]); renderPanel(q); return; }
+                if (b.dataset.dt) { S.dt = !S.dt; S.dtv = null; renderPanel('#c-target'); return; }
+                if (b.dataset.dtm) { var tt = parseT(w.target), vv = S.dtv || { y: tt.y, m: tt.m }, nm2 = vv.m + Number(b.dataset.dtm); S.dtv = { y: vv.y + Math.floor(nm2 / 12), m: ((nm2 % 12) + 12) % 12 }; renderPanel(q); return; }
+                if (b.dataset.dtd) { var t1 = parseT(w.target), v1 = S.dtv || { y: t1.y, m: t1.m }; t1.y = v1.y; t1.m = v1.m; t1.d = Number(b.dataset.dtd); w.target = fmtT(t1); renderWidgets(); renderPanel(q); return; }
+                if (b.dataset.dtt) { var t2 = parseT(w.target), kv2 = b.dataset.dtt.split(':'), n2 = Number(kv2[1]); if (kv2[0] === 'h') t2.hh = (t2.hh + n2 + 24) % 24; else t2.mm = (t2.mm + n2 + 60) % 60; w.target = fmtT(t2); renderWidgets(); renderPanel(q); return; }
+                if (b.dataset.dtq) { var t3 = parseT(w.target), hm = b.dataset.dtq.split(':'); t3.hh = Number(hm[0]); t3.mm = Number(hm[1]); w.target = fmtT(t3); renderWidgets(); renderPanel(q); return; }
+                if (b.dataset.dd) { S.dd = !S.dd; renderPanel('#c-font'); return; }
         if (b.dataset.font) { w.font = b.dataset.font; S.dd = false; renderWidgets(); renderPanel('#c-font'); return; }
-        if (b.dataset.color) { var cv = b.dataset.color.split(':'); w[cv[0]] = cv[1]; renderWidgets(); renderPanel(q); return; }
+        if (b.dataset.color) { var cv = b.dataset.color.split(':'); w[cv[0]] = cv[1]; if (S.cp === cv[0]) S.hsv = hex2hsv(cv[1]); renderWidgets(); renderPanel(q); return; }
             if (b.dataset.set) { var kv = b.dataset.set.split(':'); w[kv[0]] = kv[1]; renderWidgets(); renderPanel(q); return; }
     if (b.dataset.unit) {
       var k = b.dataset.unit, on = Object.keys(w.units).filter(function (x) { return w.units[x]; });
@@ -496,30 +707,13 @@ input:disabled, select:disabled { opacity: 0.4; }
     }
   });
   document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && S.dd) { S.dd = false; renderPanel('#c-font'); return; }
+      if (e.key === 'Escape' && (S.dd || S.cp || S.dt)) { S.dd = false; S.cp = null; S.dt = false; renderPanel(); return; }
       if ((e.key === 'Enter' || e.key === ' ') && e.target.classList && e.target.classList.contains('w')) {
       e.preventDefault(); select(Number(e.target.dataset.id));
     }
   });
 
-  /* ---------- fast refresh for milliseconds ---------- */
-    (function msLoop() {
-      var last = 0;
-      function frame(ts) {
-        if (ts - last > 33) {
-          last = ts;
-          var el = document.querySelector('.w[data-type="count"]');
-          if (el) {
-            var w = S.w.filter(function (x) { return x.id === Number(el.dataset.id); })[0];
-            if (w && w.units.milliseconds) fill(el, w);
-          }
-        }
-        requestAnimationFrame(frame);
-      }
-      requestAnimationFrame(frame);
-    })();
-
-    /* ---------- boot ---------- */
+  /* ---------- boot ---------- */
   var u0 = null;
   try { u0 = localStorage.getItem('ws-ui'); } catch (err) { }
   if (UI_THEMES.indexOf(u0) < 0) u0 = (window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'cream';
