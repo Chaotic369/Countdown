@@ -1,0 +1,129 @@
+name: Custom Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_name:
+        description: "App name (android:label)"
+        required: false
+        default: "Widgettext"
+      app_version:
+        description: "App version (versionName)"
+        required: false
+        default: "1.0.0"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_NAME: ${{ github.event.inputs.app_name || 'Widgettext' }}
+      APP_VERSION: ${{ github.event.inputs.app_version || '1.0.0' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
+
+      - name: Patch app name and version
+        run: |
+          python3 - <<'PY'
+          import os, re, sys
+
+          name = os.environ["APP_NAME"]
+          version = os.environ["APP_VERSION"]
+
+          # Derive an integer versionCode from the version string (e.g. 1.2.3 -> 10203)
+          nums = [int(n) for n in re.findall(r"\d+", version)][:3]
+          while len(nums) < 3:
+              nums.append(0)
+          code = nums[0] * 10000 + nums[1] * 100 + nums[2]
+          if code < 1:
+              code = 1
+
+          # Manifest: android:label
+          mf = "app/src/main/AndroidManifest.xml"
+          with open(mf, "r", encoding="utf-8") as f:
+              s = f.read()
+          safe = (name.replace("&", "&amp;").replace("<", "&lt;")
+                      .replace('"', "&quot;"))
+          s, n = re.subn(r'android:label="[^"]*"',
+                         lambda m: 'android:label="%s"' % safe, s)
+          if n == 0:
+              print("No android:label found in manifest", file=sys.stderr)
+              sys.exit(1)
+          with open(mf, "w", encoding="utf-8") as f:
+              f.write(s)
+
+          # Gradle: versionName / versionCode
+          gf = "app/build.gradle.kts"
+          with open(gf, "r", encoding="utf-8") as f:
+              g = f.read()
+          g, n1 = re.subn(r'versionName\s*=\s*"[^"]*"',
+                          lambda m: 'versionName = "%s"' % version.replace('"', ''), g)
+          g, n2 = re.subn(r'versionCode\s*=\s*\d+',
+                          lambda m: 'versionCode = %d' % code, g)
+          if n1 == 0 or n2 == 0:
+              print("versionName/versionCode not found in build.gradle.kts", file=sys.stderr)
+              sys.exit(1)
+          with open(gf, "w", encoding="utf-8") as f:
+              f.write(g)
+
+          print("Patched: name=%s versionName=%s versionCode=%d" % (name, version, code))
+          PY
+
+      - name: Inject custom icon
+        run: |
+          if [ -f build-icon.png ]; then
+            echo "build-icon.png found, injecting into mipmap folders"
+            pip install --quiet pillow
+            python3 - <<'PY'
+          import os
+          from PIL import Image
+
+          sizes = {
+              "mdpi": 48,
+              "hdpi": 72,
+              "xhdpi": 96,
+              "xxhdpi": 144,
+              "xxxhdpi": 192,
+          }
+          src = Image.open("build-icon.png").convert("RGBA")
+          res = "app/src/main/res"
+
+          # Remove the adaptive icon so the injected PNG is used
+          adaptive = os.path.join(res, "mipmap-anydpi-v26")
+          if os.path.isdir(adaptive):
+              for fn in os.listdir(adaptive):
+                  if fn.startswith("ic_launcher"):
+                      os.remove(os.path.join(adaptive, fn))
+
+          for d, px in sizes.items():
+              out = os.path.join(res, "mipmap-" + d)
+              os.makedirs(out, exist_ok=True)
+              img = src.resize((px, px), Image.LANCZOS)
+              img.save(os.path.join(out, "ic_launcher.png"))
+              img.save(os.path.join(out, "ic_launcher_round.png"))
+          print("Icon injected")
+          PY
+          else
+            echo "build-icon.png not found, keeping default icon"
+          fi
+
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.inputs.app_name || 'Widgettext' }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
